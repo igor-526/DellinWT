@@ -1,5 +1,5 @@
 from gino import Gino
-from sqlalchemy import Column, BigInteger, String, ForeignKey, Date, Time
+from sqlalchemy import Column, BigInteger, String, ForeignKey, Date, Time, Integer, Float
 import sqlalchemy as sa
 from typing import List
 import config
@@ -25,6 +25,7 @@ class User(BaseModel):
 
     id = Column(BigInteger, primary_key=True)
     number = Column(BigInteger, unique=True, nullable=False)
+    worktime = Column(Integer, nullable=True)
 
 class Time(BaseModel):
     __tablename__ = "time"
@@ -33,6 +34,16 @@ class Time(BaseModel):
     date = Column(Date, nullable=False)
     start = Column(Time, nullable=False)
     end = Column(Time, nullable=False)
+
+
+class Auto(BaseModel):
+    __tablename__ = "auto"
+
+    id = Column(BigInteger, primary_key=True)
+    name = Column(String(40), unique=True, nullable=False)
+    consumption = Column(Float, nullable=False)
+    tank = Column(Integer, nullable=False)
+
 
 async def on_dbstartup():
     await db.set_bind(config.POSTGRES_URI)
