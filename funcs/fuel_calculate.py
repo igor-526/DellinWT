@@ -1,0 +1,16 @@
+import db_api
+
+async def calc_fuel(res):
+    auto = res['auto']
+    auto_info = await db_api.sel_auto(auto)
+    s_odo = res['start_odo']
+    f_odo = res['finish_odo']
+    f = res['fuel']
+    rf = res['refuel']
+    result = {}
+    result['odo'] = f_odo - s_odo
+    result['fuel'] = f + rf - (f_odo - s_odo)/100*auto_info['consumption']
+    result['auto'] = auto
+    result['consumption'] = auto_info['consumption']
+    result['tank'] = auto_info['tank']
+    return result

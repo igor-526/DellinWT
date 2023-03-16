@@ -24,7 +24,7 @@ class User(BaseModel):
     __tablename__ = "user"
 
     id = Column(BigInteger, primary_key=True)
-    number = Column(BigInteger, unique=True, nullable=False)
+    number = Column(BigInteger, nullable=True)
     worktime = Column(Integer, nullable=True)
 
 class Time(BaseModel):
