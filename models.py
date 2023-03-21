@@ -24,7 +24,7 @@ class User(BaseModel):
     __tablename__ = "user"
 
     id = Column(BigInteger, primary_key=True)
-    number = Column(BigInteger, nullable=True)
+    name = Column(String, nullable=False)
     worktime = Column(Integer, nullable=True)
 
 class Time(BaseModel):
@@ -34,6 +34,7 @@ class Time(BaseModel):
     date = Column(Date, nullable=False)
     start = Column(Time, nullable=False)
     end = Column(Time, nullable=False)
+    c = Column(Float, nullable=False)
 
 
 class Auto(BaseModel):

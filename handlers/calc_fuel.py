@@ -2,7 +2,6 @@ from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from create_bot import dp, bot
 from aiogram.dispatcher.filters.state import State, StatesGroup
-from pprint import pprint
 from keyboards import auto_keys
 from funcs import calc_fuel
 from keyboards import menu_keys

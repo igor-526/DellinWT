@@ -3,15 +3,25 @@ from models import db, User, Time, Auto
 
 async def add_user(
     id: int,
-    number: int,
-    worktime: int):
-    user = User(id=id, number=number, worktime=worktime)
+    name: int,
+        ):
+    user = User(id=id, name=name)
     await user.create()
 
 
 async def chk_user(id):
     user = await db.scalar(db.exists().where(User.id == id).select())
     return user
+
+
+async def chk_reg(id):
+    user = await User.query.where(User.id == id).gino.first()
+    return user.worktime
+
+
+async def add_wt(id: int, time: int):
+    updated_user = await User.query.where(User.id == id).gino.first()
+    await updated_user.update(worktime=time).apply()
 
 
 async def add_auto(name: str,
@@ -22,6 +32,13 @@ async def add_auto(name: str,
         await auto.create()
     except:
         print('Автомобиль не добавлен')
+
+
+async def add_time(id, date, start, end, c):
+    time = Time(driver=id, date=date, start=start, end=end, c=c)
+    await time.create()
+
+
 
 
 async def show_auto():
