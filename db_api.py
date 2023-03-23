@@ -34,8 +34,8 @@ async def add_auto(name: str,
         print('Автомобиль не добавлен')
 
 
-async def add_time(id, date, start, end, c):
-    time = Time(driver=id, date=date, start=start, end=end, c=c)
+async def add_time(id, start, end, c, total):
+    time = Time(driver=id, start=start, end=end, c=c, total=total)
     await time.create()
 
 
@@ -54,4 +54,11 @@ async def sel_auto(name: str):
     info = {}
     info['consumption'] = auto.consumption
     info['tank'] = auto.tank
+    return info
+
+async def sel_time(id: id):
+    timetable = await Time.query.where(Time.driver == id).gino.all()
+    info = []
+    for time in timetable:
+        info.append({"start": time.start, "end": time.end, "total": time.total})
     return info

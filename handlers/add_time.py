@@ -8,6 +8,7 @@ from create_bot import dp, bot
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from keyboards import schedule_keys
 from keyboards import day_keys
+from keyboards import menu_keys
 
 
 class Addtime(StatesGroup):
@@ -17,20 +18,18 @@ class Addtime(StatesGroup):
     day_status = State()
 
 
-def converttime(time):
-    dt = (datetime.datetime.strptime("01.00", "%H.%M"))
-    return dt
+def converttime(date, time):
+    n_time = time.split(".")
+    res = datetime.datetime(date.year, date.month, date.day, int(n_time[0]), int(n_time[1]), 0, 0)
+    return res
 
 def totaltime(start, end, c):
-    delta = end - start
-    ttl = delta * 2
-    total = {}
-    total['worked'] = delta
-    total['total'] = ttl
-    pprint(total)
-    print(str(total['worked']))
-    return total
-
+    ttl = {}
+    ttl['time'] = end - start
+    ttl['dinner'] = datetime.timedelta(hours=1)
+    ttl['total'] = (ttl['time'] - ttl['dinner']) * c
+    ttl['totalfloat'] = float(ttl['total'].seconds/3600)
+    return ttl
 
 
 async def reg_schedule(message: types.Message, state: FSMContext):
@@ -50,10 +49,10 @@ async def reg_schedule(message: types.Message, state: FSMContext):
         await message.answer("Я так не понимаю :(\n"
                              "Пожалуйста, выберите один из графиков:", reply_markup=schedule_keys)
 
+
 async def reg_s_time(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
-        data['date'] = datetime.date.today()
-        data['start'] = converttime(message.text)
+        data['start'] = converttime(datetime.date.today(), message.text)
     await message.answer("Во сколько по путевому листу вы закончили работать?\n"
                          "ЧЧ.MM")
     await Addtime.f_time.set()
@@ -61,7 +60,7 @@ async def reg_s_time(message: types.Message, state: FSMContext):
 
 async def reg_f_time(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
-        data['end'] = converttime(message.text)
+        data['end'] = converttime(datetime.date.today(), message.text)
     await message.answer("Как зарегистрировать данный рабочий день?", reply_markup=day_keys)
     await Addtime.day_status.set()
 
@@ -79,12 +78,18 @@ async def reg_day_status(message: types.Message, state: FSMContext):
                              "Пожалуйста, выберите вариант:", reply_markup=day_keys)
     if c:
         async with state.proxy() as data:
+            ttl = totaltime(data['start'], data['end'], c)
             await db_api.add_time(int(message.from_user.id),
-                            data['date'],
                             data['start'],
                             data['end'],
-                            float(c))
-            totaltime(data['start'], data['end'], 1)
+                            float(c),
+                            ttl['totalfloat'])
+            await message.answer(f'Вы начали работать в {data["start"].hour}:{data["start"].minute}\n'
+                                 f'Вы закончили работать в {data["end"].hour}:{data["end"].minute}\n'
+                                 f'Ваш обед составляет: 01:00\n'
+                                 f'В запись идёт следующее время: {ttl["total"]}')
+            await message.answer("Выберите действие:", reply_markup=menu_keys)
+            await state.finish()
 
 
 def register_handlers_add_time(dp: Dispatcher):

@@ -5,6 +5,7 @@ from keyboards import menu_keys
 from handlers.calc_fuel import Calculate
 from handlers.add_time import Addtime
 from keyboards import schedule_keys
+import funcs
 
 
 async def command_start(message : types.Message):
@@ -49,6 +50,13 @@ async def comm(message : types.Message):
 
         elif str(message.text) == "Настройки":
             await message.answer("К сожалению, данная функция ещё не реализована :(")
+
+
+        elif str(message.text) == "Отчёты":
+            msg = await funcs.report_time.generate_msg(int(message.from_user.id))
+            await message.answer(msg, reply_markup=menu_keys)
+
+
         else:
             await message.answer("Выберите действие:", reply_markup=menu_keys)
     else:

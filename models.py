@@ -1,5 +1,5 @@
 from gino import Gino
-from sqlalchemy import Column, BigInteger, String, ForeignKey, Date, Time, Integer, Float
+from sqlalchemy import Column, BigInteger, String, ForeignKey, DateTime, Integer, Float
 import sqlalchemy as sa
 from typing import List
 import config
@@ -31,10 +31,10 @@ class Time(BaseModel):
     __tablename__ = "time"
 
     driver = Column(BigInteger, ForeignKey("user.id"), nullable=False)
-    date = Column(Date, nullable=False)
-    start = Column(Time, nullable=False)
-    end = Column(Time, nullable=False)
+    start = Column(DateTime, nullable=False)
+    end = Column(DateTime, nullable=False)
     c = Column(Float, nullable=False)
+    total = Column(Float, nullable=False)
 
 
 class Auto(BaseModel):
