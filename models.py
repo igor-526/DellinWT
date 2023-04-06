@@ -20,12 +20,14 @@ class BaseModel(db.Model):
         values_str = " ".join(f"{name}={value!r}" for name, value in values.items())
         return f"<{model} {values_str}>"
 
+
 class User(BaseModel):
     __tablename__ = "user"
 
     id = Column(BigInteger, primary_key=True)
     name = Column(String, nullable=False)
     worktime = Column(Integer, nullable=True)
+
 
 class Time(BaseModel):
     __tablename__ = "time"
@@ -44,6 +46,17 @@ class Auto(BaseModel):
     name = Column(String(40), unique=True, nullable=False)
     consumption = Column(Float, nullable=False)
     tank = Column(Integer, nullable=False)
+
+
+class Contacts(BaseModel):
+    __tablename__ = "contacts"
+
+    position = Column(String(50), nullable=False)
+    first_name = Column(String(25), nullable=False)
+    last_name = Column(String(25), nullable=False)
+    middle_name = Column(String(25), nullable=False)
+    comment = Column(String(25), nullable=False)
+    phone = Column(String(12), nullable=False, unique=True)
 
 
 async def on_dbstartup():

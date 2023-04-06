@@ -1,5 +1,4 @@
 from pprint import pprint
-
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 import datetime
@@ -19,9 +18,12 @@ class Addtime(StatesGroup):
 
 
 def converttime(date, time):
-    n_time = time.split(".")
-    res = datetime.datetime(date.year, date.month, date.day, int(n_time[0]), int(n_time[1]), 0, 0)
-    return res
+    try:
+        n_time = time.split(".")
+        res = datetime.datetime(date.year, date.month, date.day, int(n_time[0]), int(n_time[1]), 0, 0)
+        return res
+    except:
+        return False
 
 def totaltime(start, end, c):
     ttl = {}
@@ -51,18 +53,31 @@ async def reg_schedule(message: types.Message, state: FSMContext):
 
 
 async def reg_s_time(message: types.Message, state: FSMContext):
-    async with state.proxy() as data:
-        data['start'] = converttime(datetime.date.today(), message.text)
-    await message.answer("Во сколько по путевому листу вы закончили работать?\n"
-                         "ЧЧ.MM")
-    await Addtime.f_time.set()
+    res = converttime(datetime.date.today(), message.text)
+    if res:
+        async with state.proxy() as data:
+            data['start'] = res
+        await message.answer("Во сколько по путевому листу вы закончили работать?\n"
+                                 "ЧЧ.MM")
+        await Addtime.f_time.set()
+    else:
+        await message.answer("Я вас не понял :(\nВведите время в формате ЧЧ.ММ")
 
 
 async def reg_f_time(message: types.Message, state: FSMContext):
-    async with state.proxy() as data:
-        data['end'] = converttime(datetime.date.today(), message.text)
-    await message.answer("Как зарегистрировать данный рабочий день?", reply_markup=day_keys)
-    await Addtime.day_status.set()
+    res = converttime(datetime.date.today(), message.text)
+    if res:
+        async with state.proxy() as data:
+            if res > data['start']:
+                data['end'] = res
+                await message.answer("Как зарегистрировать данный рабочий день?", reply_markup=day_keys)
+                await Addtime.day_status.set()
+            else:
+                await message.answer('Ошибка! Время завершения рабочего дня меньше времени начала рабочего дня!\n'
+                                     'Если вы закончили работать в других сутках, укажите "23.59", после чего добавьте '
+                                     'новый рабочий день')
+    else:
+        await message.answer("Я вас не понял :(\nВведите время в формате ЧЧ.ММ")
 
 
 async def reg_day_status(message: types.Message, state: FSMContext):

@@ -1,10 +1,9 @@
 from aiogram import types, Dispatcher
 import db_api
-from keyboards import start_keys
-from keyboards import menu_keys
+from keyboards import start_keys, menu_keys, schedule_keys, pos_keys
 from handlers.calc_fuel import Calculate
 from handlers.add_time import Addtime
-from keyboards import schedule_keys
+from handlers.contacts import Contacts
 import funcs
 
 
@@ -55,6 +54,11 @@ async def comm(message : types.Message):
         elif str(message.text) == "Отчёты":
             msg = await funcs.report_time.generate_msg(int(message.from_user.id))
             await message.answer(msg, reply_markup=menu_keys)
+
+
+        elif str(message.text) == "Полезные контакты":
+            await Contacts.select.set()
+            await message.answer("Кто Вам нужен?", reply_markup=pos_keys)
 
 
         else:

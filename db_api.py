@@ -1,12 +1,48 @@
-from models import db, User, Time, Auto
+from models import db, User, Time, Auto, Contacts
 
 
 async def add_user(
-    id: int,
-    name: int,
-        ):
+    id: int, name: int):
     user = User(id=id, name=name)
     await user.create()
+
+
+async def add_auto(name: str,
+                   consumption: float,
+                   tank: int):
+    try:
+        auto = Auto(name=name, consumption=consumption, tank=tank)
+        await auto.create()
+    except:
+        pass
+
+
+async def add_time(id, start, end, c, total):
+    time = Time(driver=id, start=start, end=end, c=c, total=total)
+    await time.create()
+
+
+async def add_wt(id: int, time: int):
+    updated_user = await User.query.where(User.id == id).gino.first()
+    await updated_user.update(worktime=time).apply()
+
+
+async def add_contact(position: str,
+                      first_name: str,
+                      last_name: str,
+                      middle_name: str,
+                      comment: str,
+                      phone: str):
+    try:
+        contact = Contacts(position = position,
+                           first_name = first_name,
+                           last_name = last_name,
+                           middle_name = middle_name,
+                           comment = comment,
+                           phone = phone)
+        await contact.create()
+    except:
+        pass
 
 
 async def chk_user(id):
@@ -19,28 +55,6 @@ async def chk_reg(id):
     return user.worktime
 
 
-async def add_wt(id: int, time: int):
-    updated_user = await User.query.where(User.id == id).gino.first()
-    await updated_user.update(worktime=time).apply()
-
-
-async def add_auto(name: str,
-                   consumption: float,
-                   tank: int):
-    try:
-        auto = Auto(name=name, consumption=consumption, tank=tank)
-        await auto.create()
-    except:
-        print('Автомобиль не добавлен')
-
-
-async def add_time(id, start, end, c, total):
-    time = Time(driver=id, start=start, end=end, c=c, total=total)
-    await time.create()
-
-
-
-
 async def show_auto():
     auto = await Auto.query.gino.all()
     auto_list = []
@@ -49,12 +63,18 @@ async def show_auto():
     return auto_list
 
 
+async def show_contacts(position):
+    contacts = await Contacts.query.where(Contacts.position == position).order_by('last_name').gino.all()
+    return contacts
+
+
 async def sel_auto(name: str):
     auto = await Auto.query.where(Auto.name == name).gino.first()
     info = {}
     info['consumption'] = auto.consumption
     info['tank'] = auto.tank
     return info
+
 
 async def sel_time(id: id):
     timetable = await Time.query.where(Time.driver == id).gino.all()
