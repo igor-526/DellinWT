@@ -7,4 +7,6 @@ async def auto_keys():
     for auto in list_auto:
         button = KeyboardButton(auto['name'])
         keys.add(button)
+    cancel_button = KeyboardButton("Отмена")
+    keys.add(cancel_button)
     return keys

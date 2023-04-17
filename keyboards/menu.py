@@ -1,6 +1,6 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
-b1 = KeyboardButton("Посчитать топливо")
+b1 = KeyboardButton("Посчитать ПЛ")
 b2 = KeyboardButton("Добавить рабочее время")
 b3 = KeyboardButton("Настройки")
 b4 = KeyboardButton("Отчёты")

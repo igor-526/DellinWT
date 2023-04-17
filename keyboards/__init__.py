@@ -4,3 +4,10 @@ from keyboards.auto import auto_keys
 from keyboards.schedule import schedule_keys
 from keyboards.day import day_keys
 from keyboards.positions import pos_keys
+from keyboards.cancel import cancel_keys
+from keyboards.confirm import confirm_keys
+from keyboards.reports import report_keys
+from keyboards.reported import reported_keys
+from keyboards.del_confirm import del_confirm_keys
+from keyboards.cities import city_keys
+from keyboards.bases import base_keys

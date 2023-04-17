@@ -1,7 +1,7 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
-b1 = KeyboardButton("5/2")
-b2 = KeyboardButton("2/2")
+b1 = KeyboardButton("Да")
+b2 = KeyboardButton("Нет")
 
 
 schedule_keys = ReplyKeyboardMarkup(resize_keyboard=True)

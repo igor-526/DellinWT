@@ -21,17 +21,36 @@ class BaseModel(db.Model):
         return f"<{model} {values_str}>"
 
 
+
+class City(BaseModel):
+    __tablename__ = "city"
+
+    id = Column(BigInteger, primary_key=True)
+    name = Column(String, nullable=False)
+
+
+class Base(BaseModel):
+    __tablename__ = "base"
+
+    id = Column(BigInteger, primary_key=True)
+    city = Column(Integer, ForeignKey("city.id"), nullable=False)
+    name = Column(String, nullable=False)
+
 class User(BaseModel):
     __tablename__ = "user"
 
     id = Column(BigInteger, primary_key=True)
     name = Column(String, nullable=False)
-    worktime = Column(Integer, nullable=True)
+    city = Column(Integer, ForeignKey("city.id"), nullable=False)
+    base = Column(Integer, ForeignKey("base.id"), nullable=False)
+    mode = Column(Integer, nullable=False)
+    workdays = Column(Integer, nullable=True)
 
 
 class Time(BaseModel):
     __tablename__ = "time"
 
+    id = Column(Integer, primary_key=True)
     driver = Column(BigInteger, ForeignKey("user.id"), nullable=False)
     start = Column(DateTime, nullable=False)
     end = Column(DateTime, nullable=False)
@@ -43,6 +62,7 @@ class Auto(BaseModel):
     __tablename__ = "auto"
 
     id = Column(BigInteger, primary_key=True)
+    city = Column(Integer, ForeignKey("city.id"), nullable=False)
     name = Column(String(40), unique=True, nullable=False)
     consumption = Column(Float, nullable=False)
     tank = Column(Integer, nullable=False)
@@ -51,18 +71,40 @@ class Auto(BaseModel):
 class Contacts(BaseModel):
     __tablename__ = "contacts"
 
+    city = Column(Integer, ForeignKey("city.id"), nullable=False)
     position = Column(String(50), nullable=False)
     first_name = Column(String(25), nullable=False)
     last_name = Column(String(25), nullable=False)
-    middle_name = Column(String(25), nullable=False)
-    comment = Column(String(25), nullable=False)
+    middle_name = Column(String(25))
+    comment = Column(String(100))
     phone = Column(String(12), nullable=False, unique=True)
 
 
-async def on_dbstartup():
+class Turnover(BaseModel):
+    __tablename__ = "turnover"
+
+    id = Column(Integer, primary_key=True)
+    driver = Column(BigInteger, ForeignKey("user.id"), nullable=False)
+    cash = Column(Float, nullable=False)
+    date = Column(DateTime, nullable=False)
+
+
+class Fuel(BaseModel):
+    __tablename__ = "fuel"
+
+    id = Column(Integer, primary_key=True)
+    driver = Column(BigInteger, ForeignKey("user.id"), nullable=False)
+    milleage = Column(Integer, nullable=False)
+    fuel_delta = Column(Float, nullable=False)
+    fuel_burnout = Column(Float)
+    fuel_economy = Column(Float)
+    date = Column(DateTime, nullable=False)
+
+
+async def db_bind():
     await db.set_bind(config.POSTGRES_URI)
-    print("Connected to database succesfully!")
-    if config.resetdb == 1:
-        await db.gino.drop_all()
-        await db.gino.create_all()
-        print("Database was reseted")
+
+
+async def db_reset():
+    await db.gino.drop_all()
+    await db.gino.create_all()

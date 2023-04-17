@@ -2,3 +2,6 @@
 .idea/
 __pycache__
 venv/
+.env
+alembic.ini
+alembic/
