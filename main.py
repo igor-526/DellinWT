@@ -57,11 +57,13 @@ async def on_startup(_):
     print("Bot started succesfully!")
 
 if __name__ == "__main__":
-    from handlers import calc_fuel, commands, add_time, contacts, reports, registration
+    from handlers import calc_fuel, commands, add_time, contacts, reports, registration, settings, turnover
     calc_fuel.register_handlers_calc_fuel(dp)
     commands.register_handlers_commands(dp)
     add_time.register_handlers_add_time(dp)
     contacts.register_handlers_contacts(dp)
     reports.register_handlers_reports(dp)
     registration.register_handlers_registration(dp)
+    settings.register_handlers_settings(dp)
+    turnover.register_handlers_turnover(dp)
     executor.start_polling(dp, on_startup=on_startup)

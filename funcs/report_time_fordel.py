@@ -1,5 +1,4 @@
 import db_api
-from pprint import pprint
 
 async def calc(id, datefordel):
     timetable = await db_api.sel_time(id)

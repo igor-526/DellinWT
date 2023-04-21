@@ -6,3 +6,4 @@ from funcs.convert_timedelta import converttimedelta
 from funcs.loggingg import log
 from funcs.get_workdays import get_wdays
 from funcs.generate_profile import gen_profile
+from funcs.report_turnover import gen_turnover

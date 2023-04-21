@@ -54,7 +54,7 @@ async def schedule(message: types.Message, state: FSMContext):
 
     elif message.text == "Нет":
         async with state.proxy() as data:
-            data['mode'] = 0
+            data['mode'] = 2
         await message.answer("Введите количество рабочих дней в этом месяце:\n"
                              "Далее это можно будет поменять в настройках")
         await Registration.days.set()

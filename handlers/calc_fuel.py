@@ -3,13 +3,14 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 import db_api
 from funcs import calc_fuel, log
-from keyboards import menu_keys, cancel_keys, confirm_keys, auto_keys
+from keyboards import menu_keys, cancel_keys, confirm_keys, auto_keys, refuel_keys
 from datetime import date
 
 class Calculate(StatesGroup):
     s_odometer = State()
     f_odometer = State()
     fuel = State()
+    ask_refuel = State()
     refuel = State()
     sel_auto = State()
     confirm = State()
@@ -67,9 +68,8 @@ async def ask_refuel(message: types.Message, state: FSMContext):
         if val >= 1:
             async with state.proxy() as data:
                 data['fuel'] = val
-            await Calculate.refuel.set()
-            await message.answer("Подскажите, вы заправлялись? Введите количество заправленных литров:\n"
-                                 "Если не заправлялись, введите 0", reply_markup=cancel_keys)
+            await Calculate.ask_refuel.set()
+            await message.answer("Подскажите, вы заправлялись?", reply_markup=refuel_keys)
         else:
             await message.answer("Остаток топлива не может быть меньше 1\n"
                                  "Пожалуйста, введите значение, соответствующее значению остатка топлива при "
@@ -78,6 +78,22 @@ async def ask_refuel(message: types.Message, state: FSMContext):
         await message.answer("Я так не понимаю :(\n"
                              "Напишите мне сообщение, содержащее исключительно число, соответствующее значению остатка "
                              "топлива транспортного средства при открытии путевого листа", reply_markup=cancel_keys)
+
+
+async def ask_ref_count(message: types.Message, state: FSMContext):
+    if message.text == "Отмена":
+        await state.finish()
+        await message.answer("Выберите действие:", reply_markup=menu_keys)
+        return
+    elif message.text == "Нет":
+        async with state.proxy() as data:
+            data['refuel'] = 0
+        await Calculate.sel_auto.set()
+        await message.answer("Отлично! Последнее - выберите ТС:", reply_markup=await auto_keys())
+    elif message.text == "Заправлялся":
+        await message.answer("Введите количество заправленных литров:")
+        await Calculate.refuel.set()
+
 
 
 async def ask_auto(message: types.Message, state: FSMContext):
@@ -127,7 +143,7 @@ async def calc_result(message: types.Message, state: FSMContext):
 async def confirm(message: types.Message, state: FSMContext):
     if str(message.text) == "Добавить запись":
         async with state.proxy() as data:
-            await db_api.add_fuel(message.from_id, data['result']['odo'], data['result']['fuel_delta'], 0, 0, date.today())
+            await db_api.add_fuel(message.from_id, data['result']['odo'], data['result']['fuel_delta'], date.today())
         await message.answer("Запись добавлена\n"
                                  "Выберите действие:", reply_markup=menu_keys)
         await log(message.from_user.id, "Added fuel to DB", f'{data["result"]}')
@@ -145,3 +161,4 @@ def register_handlers_calc_fuel(dp: Dispatcher):
     dp.register_message_handler(ask_auto, state=Calculate.refuel)
     dp.register_message_handler(calc_result, state=Calculate.sel_auto)
     dp.register_message_handler(confirm, state=Calculate.confirm)
+    dp.register_message_handler(ask_ref_count, state=Calculate.ask_refuel)

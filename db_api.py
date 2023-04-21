@@ -1,4 +1,4 @@
-from models import db, User, Time, Auto, Contacts, City, Base, Fuel
+from models import db, User, Time, Auto, Contacts, City, Base, Fuel, Turnover
 
 
 async def add_user(id: int,
@@ -71,15 +71,16 @@ async def add_base(id: int, city:int, name: str):
 async def add_fuel(id: int,
                    milleage: int,
                    fuel_delta: float,
-                   fuel_burnout: float,
-                   fuel_economy: float,
                    date):
 
-    fuel = Fuel(driver=id, milleage=milleage, fuel_delta=fuel_delta, fuel_burnout=fuel_burnout,
-                fuel_economy=fuel_economy, date=date)
+    fuel = Fuel(driver=id, milleage=milleage, fuel_delta=fuel_delta, date=date)
     await fuel.create()
     return True
 
+
+async def add_turnover(driver, cash, date):
+    turnover = Turnover(driver=driver, cash=cash, date=date)
+    await turnover.create()
 
 
 async def chk_user(id):
@@ -164,8 +165,7 @@ async def sel_fuel(id):
     info = []
     for note in fueltable:
         info.append({"milleage": note.milleage, "fuel_delta": note.fuel_delta,
-                     "fuel_burnout": note.fuel_burnout, "fuel_economy": note.fuel_economy,
-                     "date": note.date})
+                     "date": note.date, 'id': note.id})
     return info
 
 
@@ -181,3 +181,50 @@ async def del_time(ids):
     for id in ids:
         note = await Time.query.where(Time.id == id).gino.first()
         await note.delete()
+
+
+async def del_turnover(ids):
+    for id in ids:
+        note = await Turnover.query.where(Turnover.id == id).gino.first()
+        await note.delete()
+
+
+async def del_fuel(ids):
+    for id in ids:
+        note = await Fuel.query.where(Fuel.id == id).gino.first()
+        await note.delete()
+
+
+async def del_user(id):
+    time = await Time.query.where(Time.driver == id).gino.all()
+    fuel = await Fuel.query.where(Fuel.driver == id).gino.all()
+    turnover = await Turnover.query.where(Turnover.driver == id).gino.all()
+    user = await User.query.where(User.id == id).gino.first()
+    for note in time:
+        await note.delete()
+    for note in fuel:
+        await note.delete()
+    for note in turnover:
+        await note.delete()
+    await user.delete()
+
+
+async def upd_user(id: int,
+                   name=None,
+                   city=None,
+                   base=None,
+                   mode=None,
+                   workdays=None):
+    user = await User.query.where(User.id == id).gino.first()
+    if name:
+        await user.update(name=name).apply()
+    if city and base:
+        await user.update(city=city, base=base).apply()
+    if mode:
+        await user.update(mode=mode).apply()
+    if workdays:
+        await user.update(workdays=workdays).apply()
+
+async def sel_turnover(id):
+    turnover = await Turnover.query.where(Turnover.driver == id).gino.all()
+    return turnover

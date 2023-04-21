@@ -1,5 +1,5 @@
 from gino import Gino
-from sqlalchemy import Column, BigInteger, String, ForeignKey, DateTime, Integer, Float
+from sqlalchemy import Column, BigInteger, String, ForeignKey, DateTime, Integer, Float, Date
 import sqlalchemy as sa
 from typing import List
 import config
@@ -86,7 +86,7 @@ class Turnover(BaseModel):
     id = Column(Integer, primary_key=True)
     driver = Column(BigInteger, ForeignKey("user.id"), nullable=False)
     cash = Column(Float, nullable=False)
-    date = Column(DateTime, nullable=False)
+    date = Column(Date, nullable=False)
 
 
 class Fuel(BaseModel):
@@ -96,8 +96,6 @@ class Fuel(BaseModel):
     driver = Column(BigInteger, ForeignKey("user.id"), nullable=False)
     milleage = Column(Integer, nullable=False)
     fuel_delta = Column(Float, nullable=False)
-    fuel_burnout = Column(Float)
-    fuel_economy = Column(Float)
     date = Column(DateTime, nullable=False)
 
 

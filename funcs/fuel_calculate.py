@@ -14,4 +14,8 @@ async def calc_fuel(res):
     result['consumption'] = auto_info['consumption']
     result['tank'] = auto_info['tank']
     result['fuel_delta'] = result['odo']/100*auto_info['consumption']
+    if result['fuel'] < 1:
+        result['fuel'] = 1
+    if result['fuel'] > result['tank']:
+        result['fuel'] = result['tank']
     return result

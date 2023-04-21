@@ -1,11 +1,13 @@
 from aiogram import types, Dispatcher
 import db_api
-from keyboards import menu_keys, pos_keys, cancel_keys, report_keys, city_keys
+from keyboards import menu_keys, pos_keys, cancel_keys, report_keys, city_keys, settings_keys
 from handlers.calc_fuel import Calculate
 from handlers.add_time import Addtime
 from handlers.contacts import Contacts
 from handlers.reports import Reports
 from handlers.registration import Registration
+from handlers.settings import Settings
+from handlers.turnover import Turnover
 from funcs import gen_profile
 
 
@@ -30,26 +32,31 @@ async def menu(message: types.Message):
 
 async def comm(message: types.Message):
     if await db_api.chk_user(int(message.from_user.id)):
-        if str(message.text) == "Посчитать ПЛ":
+        if message.text == "Посчитать ПЛ":
             await Calculate.s_odometer.set()
             await message.answer("Функция позволяет быстро посчитать значения для топлива по путевому листу!")
             await message.answer("Пожалуйста, введите начальный пробег:", reply_markup=cancel_keys)
 
-        elif str(message.text) == "Добавить рабочее время":
+        elif message.text == "Добавить рабочее время":
                 await message.answer("Во сколько по путевому листу вы начали работать?", reply_markup=cancel_keys)
                 await Addtime.s_time.set()
 
-        elif str(message.text) == "Настройки":
+        elif message.text == "Настройки":
             msg = await gen_profile(message.from_user.id)
-            await message.answer(msg, reply_markup=menu_keys)
+            await message.answer(msg, reply_markup=settings_keys)
+            await Settings.sets.set()
 
-        elif str(message.text) == "Отчёты":
+        elif message.text == "Отчёты":
             await message.answer("Выберите тип отчёта:", reply_markup=report_keys)
             await Reports.select.set()
 
-        elif str(message.text) == "Полезные контакты":
+        elif message.text == "Контакты":
             await Contacts.select.set()
             await message.answer("Кто Вам нужен?", reply_markup=pos_keys)
+
+        elif message.text == "Добавить оборот":
+            await Turnover.add.set()
+            await message.answer("Введите оборот:", reply_markup=cancel_keys)
 
         else:
             await message.answer("Выберите действие:", reply_markup=menu_keys)

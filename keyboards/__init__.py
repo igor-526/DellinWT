@@ -11,3 +11,5 @@ from keyboards.reported import reported_keys
 from keyboards.del_confirm import del_confirm_keys
 from keyboards.cities import city_keys
 from keyboards.bases import base_keys
+from keyboards.settings import settings_keys
+from keyboards.refuel import refuel_keys

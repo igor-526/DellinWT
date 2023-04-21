@@ -1,6 +1,5 @@
 import db_api
 
-
 async def calc(id, month):
     fueltable = await db_api.sel_fuel(id)
     data = {'fueltable': []}
@@ -8,27 +7,26 @@ async def calc(id, month):
     total_f = 0
     total_fb = 0
     total_fe = 0
+    msg = 'Поездки за месяц:\n'
     for note in fueltable:
         if note["date"].month == month:
-            data['fueltable'].append({"date": note['date'], "milleage": note['milleage'], "fuel_delta": note["fuel_delta"]})
+            msg += f'{note["date"].strftime("%d.%m")}: {note["milleage"]} км; {note["fuel_delta"]} л.\n'
             total_m += note['milleage']
             total_f += note["fuel_delta"]
-            total_fb += note["fuel_burnout"]
-            total_fe += note["fuel_economy"]
     data["total_m"] = f"{total_m:.2f}"
     data["total_f"] = f"{total_f:.2f}"
-    data["total_fb"] = f"{total_fb:.2f}"
-    data["total_fe"] = f"{total_fe:.2f}"
-    return data
+    msg += f'\nЗа месяц вы проехали: {total_m:.2f}\n' \
+           f'Топливо по норме: {total_f:.2f}'
+    return msg
 
 
-async def generate_msg(id, month):
-    data = await calc(id, month)
-    message = ''
-    for note in data['fueltable']:
-        message += f'{note["date"]}: {note["milleage"]}км, {note["fuel_delta"]} л.\n'
-    message += f'\nЗа месяц вы проехали: {data["total_m"]}'
-    message += f'\nТопливо по норме: {data["total_f"]}'
-    message += f'\nПережоги по ПЛ: {data["total_fb"]}'
-    message += f'\nЭкономия по ПЛ: {data["total_fe"]}'
-    return message
+async def fordel(id, datefordel):
+    fueltable = await db_api.sel_fuel(id)
+    datestripped = datefordel.split(".")
+    res = {'msg': 'К удалению следующие записи: \n', 'ids': []}
+    for note in fueltable:
+        if int(note['date'].month) == int(datestripped[1]) and int(note['date'].day) == int(datestripped[0]):
+            res['msg'] += f'{note["date"].strftime("%d.%m")}: {note["milleage"]} км; {note["fuel_delta"]} л.\n'
+            res['ids'].append(int(note['id']))
+    res["msg"] += '\nПодтвердить?'
+    return res
