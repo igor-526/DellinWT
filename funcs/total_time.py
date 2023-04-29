@@ -1,6 +1,5 @@
 import datetime
 
-
 def totaltime(start, end, c):
     ttl = {}
     ttl['time'] = end - start
@@ -11,5 +10,7 @@ def totaltime(start, end, c):
         ttl['dinner'] = datetime.timedelta(hours=1)
     ttl['total'] = (ttl['time'] - ttl['dinner']) * c
     ttl['totalfloat'] = float(ttl['total'].seconds/3600)
+    if ttl['total'].days > 0:
+        ttl['totalfloat'] += ttl['total'].days*24
     ttl['c'] = c
     return ttl

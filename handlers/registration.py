@@ -5,6 +5,7 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 from keyboards import city_keys, base_keys, schedule_keys, menu_keys
 from funcs import get_wdays
 from datetime import date
+from funcs import send_inst
 
 
 class Registration(StatesGroup):
@@ -44,7 +45,7 @@ async def schedule(message: types.Message, state: FSMContext):
     if message.text == "Да":
         async with state.proxy() as data:
             data['mode'] = 1
-            data['wdays'] = get_wdays(date.today().month, date.today().year)
+            data['wdays'] = await get_wdays(date.today().month, date.today().year)
         await message.answer(f"В этом месяце у вас {data['wdays']['work']} рабочих дней\n"
                              f"Это {data['wdays']['hours']} часов!\n"
                              f"Далее бот будет рассчитывать по этому количеству, а каждый месяц обновлять норму\n"
@@ -97,7 +98,7 @@ async def instruct(message: types.Message, state: FSMContext):
         async with state.proxy() as data:
             await db_api.add_user(message.from_user.id, message.from_user.first_name,
                                   data['city'], data['base'], data['mode'], data['wdays']['work'])
-        await message.answer("А инструкция пока не написана((")
+        await send_inst(message.from_user.id)
         await message.answer("Вы успешно зарегистрировались!\nВыберите действие:", reply_markup=menu_keys)
         await state.finish()
     else:

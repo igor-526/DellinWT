@@ -18,3 +18,6 @@ upd_base = 1
 token = str(os.getenv("TOKEN"))
 
 POSTGRES_URI = f'postgresql://{user}:{password}@{host}:{port}/{database}'
+
+instruction_all = 'https://telegra.ph/Kratko-obo-vsyom-04-29'
+instruction_about = 'https://telegra.ph/DL-WorkHelper-V10-04-29'

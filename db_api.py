@@ -1,4 +1,6 @@
 from models import db, User, Time, Auto, Contacts, City, Base, Fuel, Turnover
+from funcs import get_wdays
+from datetime import date
 
 
 async def add_user(id: int,
@@ -228,3 +230,18 @@ async def upd_user(id: int,
 async def sel_turnover(id):
     turnover = await Turnover.query.where(Turnover.driver == id).gino.all()
     return turnover
+
+
+async def update_wdays():
+    fulltimers = await User.query.where(User.mode == 1).gino.all()
+    freetimers = await User.query.where(User.mode == 2).gino.all()
+    new_wd = await get_wdays(date.today().month, date.today().year)
+    full_ids = []
+    free_ids = []
+    for usr in fulltimers:
+        await usr.update(workdays=new_wd['work']).apply()
+        full_ids.append(usr.id)
+    for usr in freetimers:
+        await usr.update(workdays=0).apply()
+        free_ids.append(usr.id)
+    return {'full_ids': full_ids, 'free_ids': free_ids, 'new_wd': new_wd}

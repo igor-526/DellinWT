@@ -116,7 +116,7 @@ async def set_days(message: types.Message, state: FSMContext):
 
 async def set_mode(message: types.Message, state: FSMContext):
     if message.text == "Да":
-        days = get_wdays(date.today().month, date.today().year)
+        days = await get_wdays(date.today().month, date.today().year)
         await db_api.upd_user(message.from_user.id, mode=1, workdays=days['work'])
         await message.answer(f"В этом месяце у вас {days['work']} рабочих дней\n"
                              f"Это {days['hours']} часов!\n"

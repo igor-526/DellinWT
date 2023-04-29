@@ -10,13 +10,13 @@ async def calc(id, month):
     msg = 'Поездки за месяц:\n'
     for note in fueltable:
         if note["date"].month == month:
-            msg += f'{note["date"].strftime("%d.%m")}: {note["milleage"]} км; {note["fuel_delta"]} л.\n'
+            msg += f'{note["date"].strftime("%d.%m")}: {note["milleage"]} км; {note["fuel_delta"]:.2f} л.\n'
             total_m += note['milleage']
             total_f += note["fuel_delta"]
     data["total_m"] = f"{total_m:.2f}"
     data["total_f"] = f"{total_f:.2f}"
-    msg += f'\nЗа месяц вы проехали: {total_m:.2f}\n' \
-           f'Топливо по норме: {total_f:.2f}'
+    msg += f'\nЗа месяц вы проехали: {total_m} км\n' \
+           f'Топливо по норме: {total_f:.2f} л'
     return msg
 
 

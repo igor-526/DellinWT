@@ -1,7 +1,7 @@
 import requests
 
 
-def get_wdays(month: int, year: int):
+async def get_wdays(month: int, year: int):
     url = f'https://isdayoff.ru/api/getdata?year={year}&month={month}'
     response = requests.get(url)
     work = 0

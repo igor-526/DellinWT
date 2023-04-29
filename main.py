@@ -1,9 +1,10 @@
 from aiogram.utils import executor
-
+import schedule_tasks
 import config
 from funcs import add_auto, add_contacts, add_city, add_base, log
 from models import db_bind, db_reset
 from create_bot import dp
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 
 async def on_startup(_):
@@ -54,10 +55,14 @@ async def on_startup(_):
             print("Error. Please, check fixtures")
             return
     await log("bot", "Started", "None")
+    scheduler = AsyncIOScheduler(timezone='Europe/Moscow')
+    scheduler.add_job(schedule_tasks.upd_wd, trigger='cron', day=1, hour=8,
+                      minute=0)
+    scheduler.start()
     print("Bot started succesfully!")
 
 if __name__ == "__main__":
-    from handlers import calc_fuel, commands, add_time, contacts, reports, registration, settings, turnover
+    from handlers import calc_fuel, commands, add_time, contacts, reports, registration, settings, turnover, report
     calc_fuel.register_handlers_calc_fuel(dp)
     commands.register_handlers_commands(dp)
     add_time.register_handlers_add_time(dp)
@@ -66,4 +71,5 @@ if __name__ == "__main__":
     registration.register_handlers_registration(dp)
     settings.register_handlers_settings(dp)
     turnover.register_handlers_turnover(dp)
+    report.register_handlers_reportissue(dp)
     executor.start_polling(dp, on_startup=on_startup)

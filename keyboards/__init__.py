@@ -13,3 +13,4 @@ from keyboards.cities import city_keys
 from keyboards.bases import base_keys
 from keyboards.settings import settings_keys
 from keyboards.refuel import refuel_keys
+from keyboards.instructions import instruction_keys

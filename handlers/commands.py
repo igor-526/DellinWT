@@ -8,7 +8,8 @@ from handlers.reports import Reports
 from handlers.registration import Registration
 from handlers.settings import Settings
 from handlers.turnover import Turnover
-from funcs import gen_profile
+from handlers.report import Reportissue
+from funcs import gen_profile, send_inst
 
 
 async def command_start(message: types.Message):
@@ -57,6 +58,15 @@ async def comm(message: types.Message):
         elif message.text == "Добавить оборот":
             await Turnover.add.set()
             await message.answer("Введите оборот:", reply_markup=cancel_keys)
+
+        elif message.text == "Инструкции":
+            await send_inst(message.from_user.id)
+
+        elif message.text == "Репорт":
+            await Reportissue.report.set()
+            await message.answer("Нашли баг?\nЕсть предложение?\n"
+                                 "Хотите поблагодарить разраба?\nНапишите своё сообщение и "
+                                 "я обязательно его передам! Но только без картнок", reply_markup=cancel_keys)
 
         else:
             await message.answer("Выберите действие:", reply_markup=menu_keys)
