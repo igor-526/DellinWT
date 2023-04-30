@@ -24,7 +24,8 @@ async def percentage(cash, total):
 async def getworkdays(id, month, total):
     user = await db_api.sel_user(id)
     mode = user['mode']
-    days_plan = get_wdays(month, date.today().year)['work']
+    days = await get_wdays(month, date.today().year)
+    days_plan = days['work']
     days_fact = 0
     trips = await db_api.sel_time(id)
     for note in trips:

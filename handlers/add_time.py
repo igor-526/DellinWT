@@ -113,7 +113,8 @@ async def ch_day(message: types.Message, state: FSMContext):
                                  f'Вы начали работать в {data["start"].strftime("%H:%M")}\n'
                                  f'Вы закончили работать в {data["end"].strftime("%H:%M")}\n'
                                  f'Ваш обед составляет: {converttimedelta(data["ttl"]["dinner"])}\n'
-                                 f'В запись идёт следующее время: {converttimedelta(data["ttl"]["total"])}\n\n'
+                                 f'В запись идёт следующее время: '
+                                 f'{data["ttl"]["totalfloat"]:.2f} ч.\n\n'
                                  f'Хотите ли добавить эту запись?', reply_markup=confirm_keys)
             await log(message.from_user.id, "Calculated worktime", str(data))
             await Addtime.confirm.set()

@@ -245,3 +245,15 @@ async def update_wdays():
         await usr.update(workdays=0).apply()
         free_ids.append(usr.id)
     return {'full_ids': full_ids, 'free_ids': free_ids, 'new_wd': new_wd}
+
+
+async def del_contacts():
+    cont = await Contacts.query.gino.all()
+    for contact in cont:
+        await contact.delete()
+
+
+async def del_autos():
+    autos = await Auto.query.gino.all()
+    for auto in autos:
+        await auto.delete()

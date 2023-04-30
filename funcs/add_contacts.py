@@ -3,6 +3,7 @@ import csv
 
 
 async def add_contacts():
+    # await db_api.del_contacts()
     with open("fixtures/contacts.csv", encoding='utf-8') as contacts:
         reader = csv.reader(contacts, delimiter=",")
         for contact in reader:

@@ -3,6 +3,7 @@ import csv
 
 
 async def add_auto():
+    await db_api.del_autos()
     with open("fixtures/auto.csv", encoding='utf-8') as autos:
         reader = csv.reader(autos, delimiter = ",")
         for auto in reader:

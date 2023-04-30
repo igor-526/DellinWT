@@ -5,7 +5,7 @@
 export HOST=localhost
 export DB=dellin
 export USER=postgres
-export PASSWORD=3611810700
+export PASSWORD=
 export PORT=5432
 
 #Start settings
