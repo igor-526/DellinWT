@@ -12,8 +12,9 @@ async def on_startup(_):
     try:
         await db_bind()
         print("Connected to database succesfully!\n")
-    except:
+    except Exception as ex:
         print("Couldn't connect to database. Please, check")
+        print(ex)
         return
     if config.resetdb == 1:
         await db_reset()
@@ -62,9 +63,24 @@ async def on_startup(_):
     print("Bot started succesfully!")
 
 if __name__ == "__main__":
-    from handlers import calc_fuel, commands, add_time, contacts, reports, registration, settings, turnover, report
-    calc_fuel.register_handlers_calc_fuel(dp)
+    from handlers import commands, add_time, contacts, reports, registration, settings, turnover, report
+
+    from handlers import (register_handlers_cf_s_odo,
+                          register_handlers_cf_f_odo,
+                          register_handlers_cf_fuel,
+                          register_handlers_cf_refuel,
+                          register_handlers_cf_sel_auto,
+                          register_handlers_cf_confirm)
+
     commands.register_handlers_commands(dp)
+
+    register_handlers_cf_s_odo(dp)
+    register_handlers_cf_f_odo(dp)
+    register_handlers_cf_fuel(dp)
+    register_handlers_cf_refuel(dp)
+    register_handlers_cf_sel_auto(dp)
+    register_handlers_cf_confirm(dp)
+
     add_time.register_handlers_add_time(dp)
     contacts.register_handlers_contacts(dp)
     reports.register_handlers_reports(dp)

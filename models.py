@@ -45,6 +45,8 @@ class User(BaseModel):
     base = Column(Integer, ForeignKey("base.id"), nullable=False)
     mode = Column(Integer, nullable=False)
     workdays = Column(Integer, nullable=True)
+    last_km = Column(Integer, nullable=True)
+    last_fuel = Column(Float, nullable=True)
 
 
 class Time(BaseModel):
@@ -71,6 +73,7 @@ class Auto(BaseModel):
 class Contacts(BaseModel):
     __tablename__ = "contacts"
 
+    id = Column(Integer, primary_key=True)
     city = Column(Integer, ForeignKey("city.id"), nullable=False)
     position = Column(String(50), nullable=False)
     first_name = Column(String(25), nullable=False)

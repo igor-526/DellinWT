@@ -42,21 +42,21 @@ async def add_contact(city: int,
                       comment: str,
                       phone: str):
     try:
-        contact = Contacts(position = position,
-                           first_name = first_name,
-                           last_name = last_name,
-                           middle_name = middle_name,
-                           comment = comment,
-                           phone = phone,
-                           city = city)
+        contact = Contacts(position=position,
+                           first_name=first_name,
+                           last_name=last_name,
+                           middle_name=middle_name,
+                           comment=comment,
+                           phone=phone,
+                           city=city)
         await contact.create()
-    except:
-        pass
+    except Exception as ex:
+        print(ex)
 
 
 async def add_city(id: int, name: str):
     try:
-        city = City(id = id, name = name)
+        city = City(id=id, name=name)
         await city.create()
     except:
         pass
@@ -73,9 +73,13 @@ async def add_base(id: int, city:int, name: str):
 async def add_fuel(id: int,
                    milleage: int,
                    fuel_delta: float,
-                   date):
+                   date,
+                   f_odo,
+                   f_fuel):
 
     fuel = Fuel(driver=id, milleage=milleage, fuel_delta=fuel_delta, date=date)
+    user = await User.query.where(User.id == id).gino.first()
+    await user.update(last_km=f_odo, last_fuel=f_fuel).apply()
     await fuel.create()
     return True
 
@@ -86,7 +90,7 @@ async def add_turnover(driver, cash, date):
 
 
 async def chk_user(id):
-    user = await db.scalar(db.exists().where(User.id == id).select())
+    user = await User.query.where(User.id == id).gino.first()
     return user
 
 
@@ -98,7 +102,7 @@ async def show_auto(city=1):
     return auto_list
 
 
-async def show_contacts(position, city = 1):
+async def show_contacts(position, city=1):
     contacts = await Contacts.query.where(Contacts.city == city).order_by('last_name').gino.all()
     result = []
     for contact in contacts:
@@ -177,6 +181,14 @@ async def sel_user(id):
     base = await Base.query.where(Base.id == user.base).gino.first()
     data = {'name': user.name, 'city': city.name, 'base': base.name, 'mode': user.mode, 'workdays': user.workdays}
     return data
+
+
+async def sel_all_users():
+    users = await User.query.gino.all()
+    ids = []
+    for user in users:
+        ids.append(user.id)
+    return ids
 
 
 async def del_time(ids):
