@@ -2,6 +2,7 @@ from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from keyboards import menu_keys, cancel_keys, refuel_keys
 from handlers.calc_fuel.fsmclass import Calculate
+from handlers.commands.fsmclass import Menu
 
 
 async def fuel(message: types.Message, state: FSMContext):
@@ -23,8 +24,8 @@ async def fuel(message: types.Message, state: FSMContext):
                              "топлива транспортного средства при открытии путевого листа", reply_markup=cancel_keys)
 
 
-async def cancel(message: types.Message, state: FSMContext):
-    await state.finish()
+async def cancel(message: types.Message):
+    await Menu.menu.set()
     await message.answer("Выберите действие:", reply_markup=menu_keys)
 
 

@@ -3,6 +3,7 @@ from aiogram.dispatcher import FSMContext
 from keyboards import menu_keys, confirm_keys, auto_keys
 from handlers.calc_fuel.fsmclass import Calculate
 from funcs import calc_fuel, log
+from handlers.commands.fsmclass import Menu
 
 
 async def sel_auto(message: types.Message, state: FSMContext):
@@ -25,7 +26,7 @@ async def sel_auto(message: types.Message, state: FSMContext):
 
 
 async def cancel(message: types.Message, state: FSMContext):
-    await state.finish()
+    await Menu.menu.set()
     await message.answer("Выберите действие:", reply_markup=menu_keys)
 
 

@@ -51,7 +51,7 @@ async def add_contact(city: int,
                            city=city)
         await contact.create()
     except Exception as ex:
-        print(ex)
+        pass
 
 
 async def add_city(id: int, name: str):

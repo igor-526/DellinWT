@@ -1,0 +1,41 @@
+version: '3.9'
+
+networks:
+    db_new:
+        driver: bridge
+
+services:
+  telegram_bot:
+    build: .
+    environment:
+      HOST: postgresql
+      DB: ${DB}
+      USER: ${USER}
+      PASSWORD: ${PASSWORD}
+      PORT: ${PORT}
+      R_DB: ${R_DB}
+      U_AUTO: ${U_AUTO}
+      U_CONTACTS: ${U_CONTACTS}
+      U_CITY: ${U_CITY}
+      U_BASES: ${U_BASES}
+      TOKEN: ${TOKEN}
+    volumes:
+      - ./logs:/src/logs
+    networks:
+      - db_new
+    depends_on:
+      - postgresql
+  postgresql:
+    image: postgres:latest
+    ports:
+      - "5431:5432"
+    environment:
+      POSTGRES_USER: ${USER}
+      POSTGRES_PASSWORD: ${PASSWORD}
+      POSTGRES_DB: ${DB}
+      POSTGRES_HOST: localhost
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    networks:
+      - db_new

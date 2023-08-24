@@ -5,9 +5,11 @@ from funcs import add_auto, add_contacts, add_city, add_base, log
 from models import db_bind, db_reset
 from create_bot import dp
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+import time
 
 
 async def on_startup(_):
+    time.sleep(2)
     print("Connecting to database...")
     try:
         await db_bind()
@@ -63,29 +65,85 @@ async def on_startup(_):
     print("Bot started succesfully!")
 
 if __name__ == "__main__":
-    from handlers import commands, add_time, contacts, reports, registration, settings, turnover, report
-
     from handlers import (register_handlers_cf_s_odo,
                           register_handlers_cf_f_odo,
                           register_handlers_cf_fuel,
                           register_handlers_cf_refuel,
                           register_handlers_cf_sel_auto,
-                          register_handlers_cf_confirm)
+                          register_handlers_cf_confirm,
+                          register_handlers_at_s_time,
+                          register_handlers_at_f_time,
+                          register_handlers_at_day_status,
+                          register_handlers_at_confirm,
+                          register_handlers_at_ch_date,
+                          register_handlers_commands,
+                          register_handlers_menu,
+                          register_handlers_contacts_show,
+                          register_handlers_contacts_search,
+                          register_handlers_turnover_add,
+                          register_handlers_turnover_confirm,
+                          register_handlers_settings_name,
+                          register_handlers_settings_menu,
+                          register_handlers_settings_mode,
+                          register_handlers_settings_delete,
+                          register_handlers_settings_wd,
+                          register_handlers_settings_place,
+                          register_handlers_registration_city,
+                          register_handlers_registration_schedule,
+                          register_handlers_registration_base,
+                          register_handlers_registration_instruct,
+                          register_handlers_registration_wd,
+                          register_handlers_reports_to_delete,
+                          register_handlers_reports_fuel_delete,
+                          register_handlers_reports_time_delete,
+                          register_handlers_reports_to_select,
+                          register_handlers_reports_fuel,
+                          register_handlers_reports_fuel_select,
+                          register_handlers_reports_menu,
+                          register_handlers_reports_time_select,
+                          register_handlers_reports_time,
+                          register_handlers_reports_to,
+                          register_handlers_reportissue)
 
-    commands.register_handlers_commands(dp)
-
+    register_handlers_commands(dp)
+    register_handlers_menu(dp)
+    register_handlers_contacts_search(dp)
+    register_handlers_contacts_show(dp)
     register_handlers_cf_s_odo(dp)
     register_handlers_cf_f_odo(dp)
     register_handlers_cf_fuel(dp)
     register_handlers_cf_refuel(dp)
     register_handlers_cf_sel_auto(dp)
     register_handlers_cf_confirm(dp)
+    register_handlers_at_s_time(dp)
+    register_handlers_at_f_time(dp)
+    register_handlers_at_day_status(dp)
+    register_handlers_at_confirm(dp)
+    register_handlers_at_ch_date(dp)
+    register_handlers_turnover_add(dp)
+    register_handlers_turnover_confirm(dp)
+    register_handlers_reports_menu(dp)
+    register_handlers_reports_time(dp)
+    register_handlers_reports_time_select(dp)
+    register_handlers_reports_time_delete(dp)
+    register_handlers_reports_fuel(dp)
+    register_handlers_reports_fuel_select(dp)
+    register_handlers_reports_fuel_delete(dp)
+    register_handlers_reports_to(dp)
+    register_handlers_reports_to_select(dp)
+    register_handlers_reports_to_delete(dp)
+    register_handlers_reportissue(dp)
+    register_handlers_settings_menu(dp)
+    register_handlers_settings_place(dp)
+    register_handlers_settings_wd(dp)
+    register_handlers_settings_name(dp)
+    register_handlers_settings_mode(dp)
+    register_handlers_settings_delete(dp)
+    register_handlers_registration_instruct(dp)
+    register_handlers_registration_wd(dp)
+    register_handlers_registration_base(dp)
+    register_handlers_registration_city(dp)
+    register_handlers_registration_schedule(dp)
 
-    add_time.register_handlers_add_time(dp)
-    contacts.register_handlers_contacts(dp)
-    reports.register_handlers_reports(dp)
-    registration.register_handlers_registration(dp)
-    settings.register_handlers_settings(dp)
-    turnover.register_handlers_turnover(dp)
-    report.register_handlers_reportissue(dp)
+if __name__ == "__main__":
     executor.start_polling(dp, on_startup=on_startup)

@@ -1,11 +1,8 @@
-.env
 .idea/
-__pycache__
 __pycache__/
 venv/
 .env
-alembic.ini
-alembic/
 start.sh
 postgres-data
-logs
+docker-compose.yml
+Dockerfile
