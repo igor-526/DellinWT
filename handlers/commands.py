@@ -20,16 +20,19 @@ class Menu(StatesGroup):
 
 
 
-async def command_start(message: types.Message):
-    await message.reply("Привет\n"
-                        "Данный бот создан водителем деловых линий для упрощения вычислений "
-                        "водителя деловых линий!\n"
-                        "Должен предупредить, что введённые данные могут быть собраны для ведения журнала рабочего "
-                        "времени или топлива. А так же для статистики\n"
-                        "Поэтому, продолжая использование бота, Вы даёте согласие на обработку персональных данных :)")
-    await message.answer("Из какого вы города?", reply_markup=await city_keys())
-    await Registration.city.set()
-
+async def command_start(message: types.Message, state: FSMContext):
+    if not await db_api.chk_user(int(message.from_user.id)):
+        await message.reply("Привет\n"
+                            "Данный бот создан водителем деловых линий для упрощения вычислений "
+                            "водителя деловых линий!\n"
+                            "Должен предупредить, что введённые данные могут быть собраны для ведения журнала рабочего "
+                            "времени или топлива. А так же для статистики\n"
+                            "Поэтому, продолжая использование бота, Вы даёте согласие на обработку персональных данных :)")
+        await message.answer("Из какого вы города?", reply_markup=await city_keys())
+        await Registration.city.set()
+    else:
+        await message.answer("Выберите действие:", reply_markup=menu_keys)
+        await state.finish()
 
 async def chkusr(message: types.Message, state: FSMContext):
     if await db_api.chk_user(int(message.from_user.id)):
@@ -103,8 +106,11 @@ async def message_to_all_send(message: types.Message, state: FSMContext):
     ids = await db_api.sel_all_users()
     await message.answer(f"Сообщение отправляется {len(ids)} пользователям")
     for user in ids:
-        await bot.send_message(user, message.text)
-        time.sleep(0.2)
+        try:
+            await bot.send_message(user, message.text)
+            time.sleep(0.2)
+        except:
+            pass
     await message.answer("Сообщение отправлено")
     await state.finish()
 

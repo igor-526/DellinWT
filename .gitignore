@@ -6,3 +6,4 @@ venv/
 .env
 alembic.ini
 alembic/
+start.sh
