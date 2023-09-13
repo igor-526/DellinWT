@@ -4,6 +4,9 @@ networks:
     db_new:
         driver: bridge
 
+volumes:
+  pgdata_dellinwt:
+
 services:
   telegram_bot:
     build: .
@@ -26,16 +29,15 @@ services:
     depends_on:
       - postgresql
   postgresql:
-    image: postgres:latest
+    image: postgres:14
     ports:
-      - "5431:5432"
+      - "5433:5432"
     environment:
       POSTGRES_USER: ${USER}
       POSTGRES_PASSWORD: ${PASSWORD}
       POSTGRES_DB: ${DB}
       POSTGRES_HOST: localhost
-      PGDATA: "/var/lib/postgresql/data/pgdata"
     volumes:
-      - ./postgres-data:/var/lib/postgresql/data
+      - pgdata_dellinwt:/var/lib/postgresql/data
     networks:
       - db_new
