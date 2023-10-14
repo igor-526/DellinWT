@@ -8,4 +8,4 @@ alembic.ini
 alembic/
 start.sh
 postgres-data
-logs
+logs/

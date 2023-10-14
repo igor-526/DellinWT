@@ -102,12 +102,15 @@ async def show_auto(city=1):
     return auto_list
 
 
-async def show_contacts(position, city=1):
+async def show_contacts(position=None, city=1):
     contacts = await Contacts.query.where(Contacts.city == city).order_by('last_name').gino.all()
     result = []
     for contact in contacts:
-        if contact.position == position:
-            result.append(contact)
+        if contact.position:
+            if contact.position == position:
+                result.append(contact)
+        else:
+            return contacts
     return result
 
 

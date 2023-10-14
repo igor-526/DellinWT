@@ -5,8 +5,10 @@ from typing import List
 import config
 
 db = Gino()
+dbb = Gino()
 
-class BaseModel(db.Model):
+
+class BaseModel(db.Model, dbb.Model):
     __abstract__ = True
 
     def __str__(self):
