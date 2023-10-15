@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from view_contacts import view_contacts_rules
 from view_timejournal import view_timejournal_rules
 from view_fueljournal import view_fueljournal_rules

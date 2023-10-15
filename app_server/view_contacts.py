@@ -1,4 +1,5 @@
-from flask import jsonify
+from flask import jsonify, request
+from auth import authorizate
 import config
 from models import db, Contacts
 
@@ -16,23 +17,26 @@ def get_result(query):
 
 
 async def get_contacts():
-    await db.set_bind(config.POSTGRES_URI)
-    query = await Contacts.query.where(Contacts.city == 1).order_by('last_name').gino.all()
+    user = authorizate(request.headers.get("Authorization"))
+    async with db.with_bind(config.POSTGRES_URI):
+        query = await Contacts.query.where(Contacts.city == user["city"]).order_by('last_name').gino.all()
     db.pop_bind()
     return get_result(query)
 
 
 async def get_contacts_position(position: str):
-    await db.set_bind(config.POSTGRES_URI)
-    query = await (Contacts.query.where(Contacts.city == 1).where(Contacts.position == position.capitalize())
-                   .order_by('last_name').gino.all())
+    user = authorizate(request.headers.get("Authorization"))
+    async with db.with_bind(config.POSTGRES_URI):
+        query = await (Contacts.query.where(Contacts.city == user["city"]).where(Contacts.position == position.capitalize())
+                       .order_by('last_name').gino.all())
     db.pop_bind()
     return get_result(query)
 
 
 async def get_positions():
-    await db.set_bind(config.POSTGRES_URI)
-    query = await (Contacts.query.where(Contacts.city == 1).gino.all())
+    user = authorizate(request.headers.get("Authorization"))
+    async with db.with_bind(config.POSTGRES_URI):
+        query = await (Contacts.query.where(Contacts.city == user["city"]).gino.all())
     db.pop_bind()
     positions = []
     for contact in query:

@@ -1,13 +1,15 @@
-from flask import jsonify
+from flask import jsonify, request
+from auth import authorizate
 from sqlalchemy import extract
 import config
 from models import db, Fuel
 
 
 async def get_journal_fuel(year: int, month: int):
-    await db.set_bind(config.POSTGRES_URI)
-    query = await (Fuel.query.where(extract('month', Fuel.date) == month)
-                   .where(extract('year', Fuel.date) == year).gino.all())
+    user = authorizate(request.headers.get("Authorization"))
+    async with db.with_bind(config.POSTGRES_URI):
+        query = await (Fuel.query.where(Fuel.driver == user["id"]).where(extract('month', Fuel.date) == month)
+                       .where(extract('year', Fuel.date) == year).gino.all())
     db.pop_bind()
     result = {"count": len(query),
               "total_km": 0,

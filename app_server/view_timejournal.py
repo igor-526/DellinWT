@@ -1,13 +1,15 @@
-from flask import jsonify
+from flask import jsonify, request
+from auth import authorizate
 from sqlalchemy import extract
 import config
 from models import db, Time
 
 
 async def get_journal_time(year: int, month: int):
-    await db.set_bind(config.POSTGRES_URI)
-    query = await (Time.query.where(extract('month', Time.start) == month)
-                   .where(extract('year', Time.start) == year).gino.all())
+    user = authorizate(request.headers.get("Authorization"))
+    async with db.with_bind(config.POSTGRES_URI):
+        query = await (Time.query.where(Time.driver == user["id"]).where(extract('month', Time.start) == month)
+                       .where(extract('year', Time.start) == year).gino.all())
     db.pop_bind()
     result = {"count": len(query),
               "total": 0,
