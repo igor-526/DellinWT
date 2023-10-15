@@ -12,7 +12,8 @@ async def get_user():
     async with db.with_bind(config.POSTGRES_URI):
         query = await User.query.where(User.id == user['id']).gino.first()
         time = await (Time.query.where(Time.driver == user["id"]).where(
-            extract('month', Time.start) == date.month).where(extract('year', Time.start) == date.year).gino.all())
+            extract('month', Time.start) == date.today().month).where(
+            extract('year', Time.start) == date.today().year).gino.all())
         city = await City.query.where(City.id == user["city"]).gino.first()
         base = await Base.query.where(Base.id == user["base"]).gino.first()
     hours_worked = 0
