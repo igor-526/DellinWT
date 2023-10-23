@@ -19,12 +19,15 @@ async def authorizate(token: str):
 async def send_code():
     user_id = request.headers.get("user_id")
     if not user_id:
-        return jsonify({"status": "00"})
-    return jsonify({"status": user_id})
+        return jsonify({"status": "no_header"})
+    try:
+        int(user_id)
+    except:
+        return jsonify({"status": "error"})
     async with db.with_bind(config.POSTGRES_URI):
         user = await User.query.where(User.id == int(user_id)).gino.first()
         if not user:
-            return jsonify({"status": "1"})
+            return jsonify({"status": "not found"})
         else:
             c = random.randint(100000, 999999)
             code = Tokens(driver=int(user_id),
@@ -42,18 +45,18 @@ async def send_token(user_id: int):
         token_note = await Tokens.query.where(Tokens.driver == user_id).gino.first()
         token = ''.join(random.choice(string.ascii_letters) for i in range(10))
         if not token_note:
-            return jsonify({"status": "0"})
+            return jsonify({"status": "no user"})
         else:
             try:
                 int(code)
             except:
-                return jsonify({"status": "0"})
+                return jsonify({"status": "error"})
             if token_note.code == int(code):
                 token_note.token = token
                 await token_note.update(token=token, code=None).apply()
                 return jsonify({"status": token})
             else:
-                return jsonify({"status": "1"})
+                return jsonify({"status": "missmatching"})
 
 
 async def chk_token():
