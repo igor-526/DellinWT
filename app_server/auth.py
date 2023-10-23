@@ -65,7 +65,7 @@ async def chk_token():
         return jsonify({"status": "False"})
     else:
         async with db.with_bind(config.POSTGRES_URI):
-            token_note = await Tokens.query.where(Tokens.token == auth_token).first()
+            token_note = await Tokens.query.where(Tokens.token == auth_token).gino.first()
             if token_note:
                 return jsonify({"status": "True"})
             else:
