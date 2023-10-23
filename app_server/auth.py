@@ -8,12 +8,13 @@ from create_bot import bot
 
 
 async def authorizate(token: str):
-    token_note = await Tokens.query.where(Tokens.token == token).gino.first()
-    if token_note:
-        user = await User.query.where(User.id == token_note.driver).gino.first()
-        return {"id": user.id,
-                "city": user.city,
-                "base": user.base}
+    async with db.with_bind(config.POSTGRES_URI):
+        token_note = await Tokens.query.where(Tokens.token == token).gino.first()
+        if token_note:
+            user = await User.query.where(User.id == token_note.driver).gino.first()
+            return {"id": user.id,
+                    "city": user.city,
+                    "base": user.base}
 
 
 async def send_code():
