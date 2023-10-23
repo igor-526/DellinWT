@@ -30,10 +30,14 @@ async def send_code():
             return jsonify({"status": "not found"})
         else:
             c = random.randint(100000, 999999)
-            code = Tokens(driver=int(user_id),
-                          code=c,
-                          last_used=date.today())
-            await code.create()
+            code = await Tokens.query.where(Tokens.driver == int(user_id)).gino.first()
+            if code:
+                await code.update(code=c).apply()
+            else:
+                code = Tokens(driver=int(user_id),
+                              code=c,
+                              last_used=date.today())
+                await code.create()
             await bot.send_message(chat_id=user_id,
                                    text=str(c))
             return jsonify({"status": user.name})
