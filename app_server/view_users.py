@@ -8,7 +8,7 @@ from datetime import date
 
 
 async def get_user():
-    user = authorizate(request.headers.get("Authorization"))
+    user = await authorizate(request.headers.get("Authorization"))
     async with db.with_bind(config.POSTGRES_URI):
         query = await User.query.where(User.id == user['id']).gino.first()
         time = await (Time.query.where(Time.driver == user["id"]).where(

@@ -17,7 +17,7 @@ def get_result(query):
 
 
 async def get_contacts():
-    user = authorizate(request.headers.get("Authorization"))
+    user = await authorizate(request.headers.get("Authorization"))
     async with db.with_bind(config.POSTGRES_URI):
         query = await Contacts.query.where(Contacts.city == user["city"]).order_by('last_name').gino.all()
     db.pop_bind()
@@ -25,7 +25,7 @@ async def get_contacts():
 
 
 async def get_contacts_position(position: str):
-    user = authorizate(request.headers.get("Authorization"))
+    user = await authorizate(request.headers.get("Authorization"))
     async with db.with_bind(config.POSTGRES_URI):
         query = await (Contacts.query.where(Contacts.city == user["city"]).where(Contacts.position == position.capitalize())
                        .order_by('last_name').gino.all())
@@ -34,7 +34,7 @@ async def get_contacts_position(position: str):
 
 
 async def get_positions():
-    user = authorizate(request.headers.get("Authorization"))
+    user = await authorizate(request.headers.get("Authorization"))
     async with db.with_bind(config.POSTGRES_URI):
         query = await (Contacts.query.where(Contacts.city == user["city"]).gino.all())
     db.pop_bind()

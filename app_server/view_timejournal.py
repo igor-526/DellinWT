@@ -6,7 +6,7 @@ from models import db, Time
 
 
 async def get_journal_time(year: int, month: int):
-    user = authorizate(request.headers.get("Authorization"))
+    user = await authorizate(request.headers.get("Authorization"))
     async with db.with_bind(config.POSTGRES_URI):
         query = await (Time.query.where(Time.driver == user["id"]).where(extract('month', Time.start) == month)
                        .where(extract('year', Time.start) == year).gino.all())

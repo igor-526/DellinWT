@@ -13,7 +13,8 @@ async def add_user(id: int,
     await user.create()
 
 
-async def add_auto(city: int,
+async def add_auto(id: int,
+                   city: int,
                    name: str,
                    consumption: float,
                    tank: int):
@@ -34,7 +35,8 @@ async def add_wt(id: int, time: int):
     await updated_user.update(worktime=time).apply()
 
 
-async def add_contact(city: int,
+async def add_contact(id: int,
+                      city: int,
                       position: str,
                       last_name: str,
                       first_name: str,

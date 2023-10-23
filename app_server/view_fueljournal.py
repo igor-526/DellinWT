@@ -6,7 +6,7 @@ from models import db, Fuel
 
 
 async def get_journal_fuel(year: int, month: int):
-    user = authorizate(request.headers.get("Authorization"))
+    user = await authorizate(request.headers.get("Authorization"))
     async with db.with_bind(config.POSTGRES_URI):
         query = await (Fuel.query.where(Fuel.driver == user["id"]).where(extract('month', Fuel.date) == month)
                        .where(extract('year', Fuel.date) == year).gino.all())

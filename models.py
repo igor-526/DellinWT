@@ -23,7 +23,6 @@ class BaseModel(db.Model, dbb.Model):
         return f"<{model} {values_str}>"
 
 
-
 class City(BaseModel):
     __tablename__ = "city"
 
@@ -37,6 +36,7 @@ class Base(BaseModel):
     id = Column(BigInteger, primary_key=True)
     city = Column(Integer, ForeignKey("city.id"), nullable=False)
     name = Column(String, nullable=False)
+
 
 class User(BaseModel):
     __tablename__ = "user"
@@ -102,6 +102,16 @@ class Fuel(BaseModel):
     milleage = Column(Integer, nullable=False)
     fuel_delta = Column(Float, nullable=False)
     date = Column(DateTime, nullable=False)
+
+
+class Tokens(BaseModel):
+    __tablename__ = "tokens"
+
+    id = Column(Integer, primary_key=True)
+    driver = Column(BigInteger, ForeignKey("user.id"), nullable=False)
+    token = Column(String, unique=True)
+    code = Column(Integer)
+    last_used = Column(Date, nullable=False)
 
 
 async def db_bind():
