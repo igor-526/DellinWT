@@ -20,10 +20,7 @@ async def send_code():
     user_id = request.headers.get("user_id")
     if not user_id:
         return jsonify({"status": "00"})
-    try:
-        int(user_id)
-    except:
-        return jsonify({"status": "0"})
+    return jsonify({"status": user_id})
     async with db.with_bind(config.POSTGRES_URI):
         user = await User.query.where(User.id == int(user_id)).gino.first()
         if not user:
