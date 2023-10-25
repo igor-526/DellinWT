@@ -18,9 +18,8 @@ async def get_journal_time(year: int, month: int):
         result["total"] += note.total
         result["items"].append({
             "id": note.id,
-            "date": note.start.date(),
-            "start": str(note.start.time().strftime("%H:%M")),
-            "end": str(note.end.time().strftime("%H:%M")),
+            "start": str(note.start),
+            "end": str(note.end),
             "total": round(note.total, 2),
             "c": int(note.c)
         })
