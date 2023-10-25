@@ -103,14 +103,14 @@ class Fuel(BaseModel):
     date = Column(DateTime, nullable=False)
 
 
-# class Tokens(BaseModel):
-#     __tablename__ = "tokens"
-#
-#     id = Column(Integer, primary_key=True)
-#     driver = Column(BigInteger, ForeignKey("user.id"), nullable=False)
-#     token = Column(String, unique=True)
-#     code = Column(Integer)
-#     last_used = Column(Date, nullable=False)
+class Tokens(BaseModel):
+    __tablename__ = "tokens"
+
+    id = Column(Integer, primary_key=True)
+    driver = Column(BigInteger, ForeignKey("user.id"), nullable=False)
+    token = Column(String, unique=True)
+    code = Column(Integer)
+    last_used = Column(Date, nullable=False)
 
 
 async def db_bind():
