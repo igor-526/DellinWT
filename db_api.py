@@ -46,8 +46,7 @@ async def add_contact(id: int,
                       comment: str,
                       phone: str):
     try:
-        contact = Contacts(id=id,
-                           position=position,
+        contact = Contacts(position=position,
                            first_name=first_name,
                            last_name=last_name,
                            middle_name=middle_name,
