@@ -1,5 +1,3 @@
-import datetime
-
 def converttimedelta(td):
     sec = td.seconds
     hours = sec//3600

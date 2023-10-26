@@ -1,6 +1,7 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 import db_api
 
+
 async def city_keys():
     list = await db_api.show_cities()
     keys = ReplyKeyboardMarkup(resize_keyboard=True)

@@ -1,9 +1,9 @@
 import datetime
 
+
 def totaltime(start, end, c):
-    ttl = {}
-    ttl['time'] = end - start
-    ttl['dinner'] = datetime.timedelta(hours=0)
+    ttl = {'time': end - start,
+           'dinner': datetime.timedelta(hours=0)}
     if ttl["time"] >= datetime.timedelta(hours=4):
         ttl['dinner'] = datetime.timedelta(minutes=30)
     if ttl["time"] >= datetime.timedelta(hours=6):

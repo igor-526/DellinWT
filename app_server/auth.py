@@ -9,9 +9,11 @@ from create_bot import bot
 
 async def authorizate(token: str):
     async with db.with_bind(config.POSTGRES_URI):
-        token_note = await Tokens.query.where(Tokens.token == token).gino.first()
+        token_note = await Tokens.query.where(
+            Tokens.token == token).gino.first()
         if token_note:
-            user = await User.query.where(User.id == token_note.driver).gino.first()
+            user = await User.query.where(
+                User.id == token_note.driver).gino.first()
             return {"id": user.id,
                     "city": user.city,
                     "base": user.base}
@@ -23,7 +25,7 @@ async def send_code():
         return jsonify({"status": "no_header"})
     try:
         int(user_id)
-    except:
+    except Exception:
         return jsonify({"status": "error"})
     async with db.with_bind(config.POSTGRES_URI):
         user = await User.query.where(User.id == int(user_id)).gino.first()
@@ -31,7 +33,8 @@ async def send_code():
             return jsonify({"status": "not found"})
         else:
             c = random.randint(100000, 999999)
-            code = await Tokens.query.where(Tokens.driver == int(user_id)).gino.first()
+            code = await Tokens.query.where(
+                Tokens.driver == int(user_id)).gino.first()
             if code:
                 await code.update(code=c).apply()
             else:
@@ -47,14 +50,15 @@ async def send_code():
 async def send_token(user_id: int):
     code = request.headers.get("code")
     async with db.with_bind(config.POSTGRES_URI):
-        token_note = await Tokens.query.where(Tokens.driver == user_id).gino.first()
+        token_note = await Tokens.query.where(
+            Tokens.driver == user_id).gino.first()
         token = ''.join(random.choice(string.ascii_letters) for i in range(10))
         if not token_note:
             return jsonify({"status": "no user"})
         else:
             try:
                 int(code)
-            except:
+            except Exception:
                 return jsonify({"status": "error"})
             if token_note.code == int(code):
                 token_note.token = token
@@ -70,7 +74,8 @@ async def chk_token():
         return jsonify({"status": "False"})
     else:
         async with db.with_bind(config.POSTGRES_URI):
-            token_note = await Tokens.query.where(Tokens.token == auth_token).gino.first()
+            token_note = await Tokens.query.where(
+                Tokens.token == auth_token).gino.first()
             if token_note:
                 return jsonify({"status": "True"})
             else:
@@ -78,7 +83,9 @@ async def chk_token():
 
 
 def view_auth_rules(app):
-    app.add_url_rule("/auth", view_func=send_code, methods=['POST'])
-    app.add_url_rule("/auth/<int:user_id>", view_func=send_token, methods=["GET"])
-    app.add_url_rule("/auth/check", view_func=chk_token, methods=['GET'])
-
+    app.add_url_rule("/auth",
+                     view_func=send_code, methods=['POST'])
+    app.add_url_rule("/auth/<int:user_id>",
+                     view_func=send_token, methods=["GET"])
+    app.add_url_rule("/auth/check",
+                     view_func=chk_token, methods=['GET'])

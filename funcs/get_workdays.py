@@ -10,6 +10,6 @@ async def get_wdays(month: int, year: int):
         if day == "1":
             not_work += 1
         elif day == "0":
-            work +=1
+            work += 1
     hours = work * 8
     return {"work": work, "not_work": not_work, "hours": hours}
