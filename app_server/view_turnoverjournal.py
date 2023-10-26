@@ -19,7 +19,7 @@ async def get_journal_turnover(year: int, month: int):
         result["total"] += round(note.cash, 2)
         result["items"].append({
             "id": note.id,
-            "date": int(note.date.day),
+            "date": str(note.date),
             "cash": round(note.cash, 2)
         })
     return jsonify(result)
