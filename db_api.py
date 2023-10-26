@@ -52,7 +52,7 @@ async def add_contact(id: int,
                            comment=comment,
                            phone=phone,
                            city=city)
-        await contact.create()
+        await contact.create(overriding=True)
     except Exception as ex:
         pass
 
