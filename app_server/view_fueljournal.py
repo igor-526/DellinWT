@@ -43,5 +43,5 @@ async def delete_fuel_note(note_id: int):
 def view_fueljournal_rules(app):
     app.add_url_rule("/journal/fuel/<int:year>/<int:month>",
                      view_func=get_journal_fuel)
-    app.add_url_rule("/journal/fuel/<int:note:id>",
+    app.add_url_rule("/journal/fuel/<int:note_id>",
                      view_func=delete_fuel_note, methods=["DELETE"])
