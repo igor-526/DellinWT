@@ -1,3 +1,5 @@
+import logging
+
 from models import db, User, Time, Auto, Contacts, City, Base, Fuel, Turnover
 from funcs import get_wdays
 from datetime import date
@@ -52,9 +54,9 @@ async def add_contact(id: int,
                            comment=comment,
                            phone=phone,
                            city=city)
-        await contact.create(overriding=True)
+        await contact.create()
     except Exception as ex:
-        pass
+        logging.log(logging.CRITICAL, ex)
 
 
 async def add_city(id: int, name: str):
