@@ -1,3 +1,5 @@
+import datetime
+import db_api
 from flask import jsonify, request
 from auth import authorizate
 from sqlalchemy import extract
@@ -39,8 +41,23 @@ async def delete_time_note(note_id: int):
             return jsonify({"status": "no permission"})
 
 
+async def add_time_note():
+    user = await authorizate(request.headers.get("Authorization"))
+    start = datetime.datetime.strptime(request.headers.get("start"), '%Y-%m-%d %H:%M')
+    end = datetime.datetime.strptime(request.headers.get("end"), '%Y-%m-%d %H:%M')
+    async with db.with_bind(config.POSTGRES_URI):
+        await db_api.add_time(user['id'],
+                              start,
+                              end,
+                              int(request.headers.get('c')),
+                              float(request.headers.get('total')))
+    return jsonify({"status": "ok"})
+
+
 def view_timejournal_rules(app):
     app.add_url_rule("/journal/time/<int:year>/<int:month>",
                      view_func=get_journal_time)
     app.add_url_rule("/journal/time/<int:note_id>",
                      view_func=delete_time_note, methods=["DELETE"])
+    app.add_url_rule("/journal/time",
+                     view_func=add_time_note, methods=["PUT"])

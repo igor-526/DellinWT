@@ -26,31 +26,6 @@ async def get_contacts():
     return get_result(query)
 
 
-async def get_contacts_position(position: str):
-    user = await authorizate(request.headers.get("Authorization"))
-    async with db.with_bind(config.POSTGRES_URI):
-        query = await (Contacts.query.where(Contacts.city == user["city"])
-                       .where(Contacts.position == position.capitalize())
-                       .order_by('last_name').gino.all())
-    return get_result(query)
-
-
-async def get_positions():
-    user = await authorizate(request.headers.get("Authorization"))
-    async with db.with_bind(config.POSTGRES_URI):
-        query = await (Contacts.query.where(
-            Contacts.city == user["city"]).gino.all())
-    positions = []
-    for contact in query:
-        if contact.position not in positions:
-            positions.append(contact.position)
-    return jsonify(positions)
-
-
 def view_contacts_rules(app):
-    app.add_url_rule("/contacts/positions",
-                     view_func=get_positions)
-    app.add_url_rule("/contacts/<position>/",
-                     view_func=get_contacts_position)
     app.add_url_rule("/contacts/",
                      view_func=get_contacts)

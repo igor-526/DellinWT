@@ -2,6 +2,8 @@ from flask import jsonify, request
 from auth import authorizate
 from sqlalchemy import extract
 import config
+import datetime
+import db_api
 from models import db, Fuel
 
 
@@ -40,8 +42,32 @@ async def delete_fuel_note(note_id: int):
             return jsonify({"status": "no permission"})
 
 
+async def add_fuel_note():
+    user = await authorizate(request.headers.get("Authorization"))
+    date = datetime.datetime.strptime(request.headers.get("start"), '%Y-%m-%d').date()
+    async with db.with_bind(config.POSTGRES_URI):
+        await db_api.add_fuel(user['id'],
+                              int(request.headers.get('milleage')),
+                              float(request.headers.get('fuel_delta')),
+                              date,
+                              int(request.headers.get('f_odo')),
+                              float(request.headers.get('f_fuel')))
+    return jsonify({"status": "ok"})
+
+
+async def get_auto():
+    user = await authorizate(request.headers.get("Authorization"))
+    async with db.with_bind(config.POSTGRES_URI):
+        autos = await db_api.show_auto(user['city'])
+    return jsonify(autos)
+
+
 def view_fueljournal_rules(app):
     app.add_url_rule("/journal/fuel/<int:year>/<int:month>",
                      view_func=get_journal_fuel)
     app.add_url_rule("/journal/fuel/<int:note_id>",
                      view_func=delete_fuel_note, methods=["DELETE"])
+    app.add_url_rule("/journal/fuel",
+                     view_func=add_fuel_note, methods=["PUT"])
+    app.add_url_rule("/journal/auto",
+                     view_func=get_auto)
