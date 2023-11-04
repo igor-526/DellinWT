@@ -60,7 +60,7 @@ async def change_fuel_note(note_id: int):
     async with db.with_bind(config.POSTGRES_URI):
         query = await Fuel.query.where(Fuel.id == note_id).gino.first()
         if query.driver == user['id']:
-            date = datetime.datetime.strptime(request.headers.get("start"), '%Y-%m-%d').date()
+            date = datetime.datetime.strptime(request.headers.get("date"), '%Y-%m-%d').date()
             await query.update(milleage=int(request.headers.get('milleage')),
                                fuel_delta=float(request.headers.get('fuel_delta')),
                                date=date).apply()

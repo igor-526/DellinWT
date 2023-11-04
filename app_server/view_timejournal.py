@@ -54,6 +54,21 @@ async def add_time_note():
     return jsonify({"status": "ok"})
 
 
+async def change_time_note(note_id: int):
+    user = await authorizate(request.headers.get("Authorization"))
+    start = datetime.datetime.strptime(request.headers.get("start"), '%Y-%m-%d %H:%M')
+    end = datetime.datetime.strptime(request.headers.get("end"), '%Y-%m-%d %H:%M')
+    async with db.with_bind(config.POSTGRES_URI):
+        query = await Time.query.where(Time.id == note_id).gino.first()
+        if query.driver == user['id']:
+            await query.update(start=start,
+                               end=end,
+                               c=int(request.headers.get("c")),
+                               total=float(request.headers.get("total"))).apply()
+        else:
+            return jsonify({"status": "no permission"})
+
+
 def view_timejournal_rules(app):
     app.add_url_rule("/journal/time/<int:year>/<int:month>",
                      view_func=get_journal_time)
@@ -61,3 +76,5 @@ def view_timejournal_rules(app):
                      view_func=delete_time_note, methods=["DELETE"])
     app.add_url_rule("/journal/time",
                      view_func=add_time_note, methods=["POST"])
+    app.add_url_rule("/journal/time/<int:note_id>",
+                     view_func=change_time_note, methods=["PATCH"])
