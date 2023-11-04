@@ -55,6 +55,20 @@ async def add_fuel_note():
     return jsonify({"status": "ok"})
 
 
+async def change_fuel_note(note_id: int):
+    user = await authorizate(request.headers.get("Authorization"))
+    async with db.with_bind(config.POSTGRES_URI):
+        query = await Fuel.query.where(Fuel.id == note_id).gino.first()
+        if query.driver == user['id']:
+            date = datetime.datetime.strptime(request.headers.get("start"), '%Y-%m-%d').date()
+            await query.update(milleage=int(request.headers.get('milleage')),
+                               fuel_delta=float(request.headers.get('fuel_delta')),
+                               date=date).apply()
+            return jsonify({"status": "ok"})
+        else:
+            return jsonify({"status": "no permission"})
+
+
 async def get_auto():
     user = await authorizate(request.headers.get("Authorization"))
     async with db.with_bind(config.POSTGRES_URI):
@@ -68,6 +82,8 @@ def view_fueljournal_rules(app):
     app.add_url_rule("/journal/fuel/<int:note_id>",
                      view_func=delete_fuel_note, methods=["DELETE"])
     app.add_url_rule("/journal/fuel",
-                     view_func=add_fuel_note, methods=["PUT"])
+                     view_func=add_fuel_note, methods=["POST"])
+    app.add_url_rule("journal/fuel/<int:note_id>",
+                     view_func=change_fuel_note, methods=['PATCH'])
     app.add_url_rule("/journal/auto",
                      view_func=get_auto)

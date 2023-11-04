@@ -60,4 +60,4 @@ def view_timejournal_rules(app):
     app.add_url_rule("/journal/time/<int:note_id>",
                      view_func=delete_time_note, methods=["DELETE"])
     app.add_url_rule("/journal/time",
-                     view_func=add_time_note, methods=["PUT"])
+                     view_func=add_time_note, methods=["POST"])
