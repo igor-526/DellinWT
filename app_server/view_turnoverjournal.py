@@ -69,4 +69,5 @@ def view_turnoverjournal_rules(app):
                      view_func=delete_turnover_note, methods=["DELETE"])
     app.add_url_rule("/journal/turnover",
                      view_func=add_turnover_note, methods=["POST"])
-    app.add_url_rule("/journal/turnover/<int:note_id>")
+    app.add_url_rule("/journal/turnover/<int:note_id>",
+                     view_func=change_turnover_note, methods=["PATCH"])
