@@ -44,7 +44,7 @@ async def delete_fuel_note(note_id: int):
 
 async def add_fuel_note():
     user = await authorizate(request.headers.get("Authorization"))
-    date = datetime.datetime.strptime(request.headers.get("start"), '%Y-%m-%d').date()
+    date = datetime.datetime.strptime(request.headers.get("date"), '%Y-%m-%d').date()
     async with db.with_bind(config.POSTGRES_URI):
         await db_api.add_fuel(user['id'],
                               int(request.headers.get('milleage')),
