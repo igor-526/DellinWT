@@ -65,6 +65,7 @@ async def change_time_note(note_id: int):
                                end=end,
                                c=int(request.headers.get("c")),
                                total=float(request.headers.get("total"))).apply()
+            return jsonify({"status": "ok"})
         else:
             return jsonify({"status": "no permission"})
 

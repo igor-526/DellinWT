@@ -58,6 +58,7 @@ async def change_turnover_note(note_id):
         if query.driver == user['id']:
             await query.update(date=date,
                                cash=float(request.headers.get("cash"))).apply()
+            return jsonify({"status": "ok"})
         else:
             return jsonify({"status": "no permission"})
 
