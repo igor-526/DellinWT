@@ -83,7 +83,7 @@ def view_fueljournal_rules(app):
                      view_func=delete_fuel_note, methods=["DELETE"])
     app.add_url_rule("/journal/fuel",
                      view_func=add_fuel_note, methods=["POST"])
-    app.add_url_rule("journal/fuel/<int:note_id>",
+    app.add_url_rule("/journal/fuel/<int:note_id>",
                      view_func=change_fuel_note, methods=['PATCH'])
     app.add_url_rule("/journal/auto",
                      view_func=get_auto)
