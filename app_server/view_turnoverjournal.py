@@ -54,7 +54,7 @@ async def change_turnover_note(note_id):
     user = await authorizate(request.headers.get("Authorization"))
     date = datetime.datetime.strptime(request.headers.get("date"), '%Y-%m-%d').date()
     async with db.with_bind(config.POSTGRES_URI):
-        query = await Turnover.query.where(Turnover.id == note_id)
+        query = await Turnover.query.where(Turnover.id == note_id).gino.first()
         if query.driver == user['id']:
             await query.update(date=date,
                                cash=float(request.headers.get("cash"))).apply()
