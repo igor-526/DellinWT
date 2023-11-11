@@ -103,6 +103,7 @@ class Fuel(BaseModel):
     fuel_delta = Column(Float, nullable=False)
     s_odo = Column(Integer)
     f_odo = Column(Integer)
+    s_fuel = Column(Float)
     f_fuel = Column(Float)
     econ_fuel = Column(Float)
     over_fuel = Column(Float)

@@ -15,6 +15,7 @@ async def add_note(message: types.Message, state: FSMContext):
                               fuel_delta=data['result']['fuel_delta'],
                               s_odo=data['start_odo'],
                               f_odo=data['finish_odo'],
+                              s_fuel=data['fuel'],
                               f_fuel=data['result']['fuel'],
                               auto=data['result']['auto_id'],
                               date=date.today())
