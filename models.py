@@ -48,6 +48,7 @@ class User(BaseModel):
     workdays = Column(Integer, nullable=True)
     last_km = Column(Integer, nullable=True)
     last_fuel = Column(Float, nullable=True)
+    snils = Column(String)
 
 
 class Time(BaseModel):
@@ -74,7 +75,7 @@ class Auto(BaseModel):
 class Contacts(BaseModel):
     __tablename__ = "contacts"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(BigInteger, primary_key=True)
     city = Column(Integer, ForeignKey("city.id"), nullable=False)
     position = Column(String(50), nullable=False)
     first_name = Column(String(25), nullable=False)
@@ -100,6 +101,12 @@ class Fuel(BaseModel):
     driver = Column(BigInteger, ForeignKey("user.id"), nullable=False)
     milleage = Column(Integer, nullable=False)
     fuel_delta = Column(Float, nullable=False)
+    s_odo = Column(Integer)
+    f_odo = Column(Integer)
+    f_fuel = Column(Float)
+    econ_fuel = Column(Float)
+    over_fuel = Column(Float)
+    auto = Column(Integer, ForeignKey("auto.id"))
     date = Column(DateTime, nullable=False)
 
 

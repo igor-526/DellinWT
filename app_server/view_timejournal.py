@@ -46,12 +46,12 @@ async def add_time_note():
     start = datetime.datetime.strptime(request.headers.get("start"), '%Y-%m-%d %H:%M')
     end = datetime.datetime.strptime(request.headers.get("end"), '%Y-%m-%d %H:%M')
     async with db.with_bind(config.POSTGRES_URI):
-        await db_api.add_time(user['id'],
-                              start,
-                              end,
-                              int(request.headers.get('c')),
-                              float(request.headers.get('total')))
-    return jsonify({"status": "ok"})
+        new = await db_api.add_time(user['id'],
+                                    start,
+                                    end,
+                                    int(request.headers.get('c')),
+                                    float(request.headers.get('total')))
+    return jsonify({"status": new})
 
 
 async def change_time_note(note_id: int):

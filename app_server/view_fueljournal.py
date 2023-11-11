@@ -46,13 +46,13 @@ async def add_fuel_note():
     user = await authorizate(request.headers.get("Authorization"))
     date = datetime.datetime.strptime(request.headers.get("date"), '%Y-%m-%d').date()
     async with db.with_bind(config.POSTGRES_URI):
-        await db_api.add_fuel(user['id'],
-                              int(request.headers.get('milleage')),
-                              float(request.headers.get('fuel_delta')),
-                              date,
-                              int(request.headers.get('f_odo')),
-                              float(request.headers.get('f_fuel')))
-    return jsonify({"status": "ok"})
+        new = await db_api.add_fuel(user['id'],
+                                    int(request.headers.get('milleage')),
+                                    float(request.headers.get('fuel_delta')),
+                                    date,
+                                    int(request.headers.get('f_odo')),
+                                    float(request.headers.get('f_fuel')))
+    return jsonify({"status": new.id})
 
 
 async def change_fuel_note(note_id: int):

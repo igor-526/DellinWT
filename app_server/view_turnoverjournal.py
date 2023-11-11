@@ -44,10 +44,10 @@ async def add_turnover_note():
     user = await authorizate(request.headers.get("Authorization"))
     date = datetime.datetime.strptime(request.headers.get("date"), '%Y-%m-%d').date()
     async with db.with_bind(config.POSTGRES_URI):
-        await db_api.add_turnover(driver=user['id'],
-                                  cash=float(request.headers.get("cash")),
-                                  date=date)
-    return jsonify({"status": "ok"})
+        new = await db_api.add_turnover(driver=user['id'],
+                                        cash=float(request.headers.get("cash")),
+                                        date=date)
+    return jsonify({"status": new.id})
 
 
 async def change_turnover_note(note_id):

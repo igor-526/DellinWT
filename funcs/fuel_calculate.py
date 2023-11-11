@@ -13,7 +13,8 @@ async def calc_fuel(res):
                       f_odo - s_odo) / 100 * auto_info['consumption'],
               'auto': auto,
               'consumption': auto_info['consumption'],
-              'tank': auto_info['tank']}
+              'tank': auto_info['tank'],
+              'auto_id': auto_info['id']}
     result['fuel_delta'] = result['odo']/100*auto_info['consumption']
     if result['fuel'] < 1:
         result['fuel'] = 1

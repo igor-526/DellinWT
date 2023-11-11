@@ -10,12 +10,14 @@ from datetime import date
 
 async def add_note(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
-        await db_api.add_fuel(message.from_id,
-                              data['result']['odo'],
-                              data['result']['fuel_delta'],
-                              date.today(),
-                              data['finish_odo'],
-                              data['result']['fuel'])
+        await db_api.add_fuel(driver=message.from_id,
+                              milleage=data['result']['odo'],
+                              fuel_delta=data['result']['fuel_delta'],
+                              s_odo=data['start_odo'],
+                              f_odo=data['finish_odo'],
+                              f_fuel=data['result']['fuel'],
+                              auto=data['result']['auto_id'],
+                              date=date.today())
     await message.answer("Запись добавлена\n"
                          "Выберите действие:", reply_markup=menu_keys)
     await log(message.from_user.id, "Added fuel to DB", f'{data["result"]}')

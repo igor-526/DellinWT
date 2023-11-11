@@ -21,7 +21,11 @@ async def add_auto(id: int,
                    consumption: float,
                    tank: int):
     try:
-        auto = Auto(name=name, consumption=consumption, tank=tank, city=city)
+        auto = Auto(id=id,
+                    name=name,
+                    consumption=consumption,
+                    tank=tank,
+                    city=city)
         await auto.create()
     except:
         pass
@@ -29,7 +33,8 @@ async def add_auto(id: int,
 
 async def add_time(id, start, end, c, total):
     time = Time(driver=id, start=start, end=end, c=c, total=total)
-    await time.create()
+    new = await time.create()
+    return new.id
 
 
 async def add_wt(id: int, time: int):
@@ -66,31 +71,46 @@ async def add_city(id: int, name: str):
         pass
 
 
-async def add_base(id: int, city:int, name: str):
+async def add_base(id: int, city: int, name: str):
     try:
-        base = Base(id = id, city = city, name = name)
+        base = Base(id=id, city=city, name=name)
         await base.create()
     except:
         pass
 
 
-async def add_fuel(id: int,
+async def add_fuel(driver: int,
                    milleage: int,
                    fuel_delta: float,
-                   date,
-                   f_odo,
-                   f_fuel):
+                   s_odo: int,
+                   f_odo: int,
+                   f_fuel: float,
+                   auto: int,
+                   date: date,
+                   econ_fuel: float = 0.0,
+                   over_fuel: float = 0.0,
+):
 
-    fuel = Fuel(driver=id, milleage=milleage, fuel_delta=fuel_delta, date=date)
-    user = await User.query.where(User.id == id).gino.first()
+    fuel = Fuel(driver=driver,
+                milleage=milleage,
+                fuel_delta=fuel_delta,
+                s_odo=s_odo,
+                f_odo=f_odo,
+                f_fuel=f_fuel,
+                econ_fuel=econ_fuel,
+                over_fuel=over_fuel,
+                auto=auto,
+                date=date)
+    user = await User.query.where(User.id == driver).gino.first()
     await user.update(last_km=f_odo, last_fuel=f_fuel).apply()
-    await fuel.create()
-    return True
+    new = await fuel.create()
+    return new.id
 
 
 async def add_turnover(driver, cash, date):
     turnover = Turnover(driver=driver, cash=cash, date=date)
-    await turnover.create()
+    new = await turnover.create()
+    return new.id
 
 
 async def chk_user(id):
@@ -162,6 +182,7 @@ async def sel_auto(name: str):
     info = {}
     info['consumption'] = auto.consumption
     info['tank'] = auto.tank
+    info['id'] = auto.id
     return info
 
 
