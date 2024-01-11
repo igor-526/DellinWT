@@ -57,7 +57,7 @@ async def add_fuel_note():
                                     auto=int(request.headers.get('auto')),
                                     econ_fuel=float(request.headers.get('econ_fuel')),
                                     over_fuel=float(request.headers.get('over_fuel')))
-    return jsonify({"status": new.id})
+    return jsonify({"status": new})
 
 
 async def change_fuel_note(note_id: int):
