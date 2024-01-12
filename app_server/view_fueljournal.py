@@ -45,19 +45,22 @@ async def delete_fuel_note(note_id: int):
 async def add_fuel_note():
     user = await authorizate(request.headers.get("Authorization"))
     date = datetime.datetime.strptime(request.headers.get("date"), '%Y-%m-%d').date()
-    async with db.with_bind(config.POSTGRES_URI):
-        new = await db_api.add_fuel(driver=user['id'],
-                                    milleage=int(request.headers.get('milleage')),
-                                    fuel_delta=float(request.headers.get('fuel_delta')),
-                                    date=date,
-                                    f_odo=int(request.headers.get('f_odo')),
-                                    f_fuel=float(request.headers.get('f_fuel')),
-                                    s_odo=int(request.headers.get('s_odo')),
-                                    s_fuel=float(request.headers.get('s_fuel')),
-                                    auto=int(request.headers.get('auto')),
-                                    econ_fuel=float(request.headers.get('econ_fuel')),
-                                    over_fuel=float(request.headers.get('over_fuel')))
-    return jsonify({"status": new})
+    try:
+        async with db.with_bind(config.POSTGRES_URI):
+            new = await db_api.add_fuel(driver=user['id'],
+                                        milleage=int(request.headers.get('milleage')),
+                                        fuel_delta=float(request.headers.get('fuel_delta')),
+                                        date=date,
+                                        f_odo=int(request.headers.get('f_odo')),
+                                        f_fuel=float(request.headers.get('f_fuel')),
+                                        s_odo=int(request.headers.get('s_odo')),
+                                        s_fuel=float(request.headers.get('s_fuel')),
+                                        auto=int(request.headers.get('auto')),
+                                        econ_fuel=float(request.headers.get('econ_fuel')),
+                                        over_fuel=float(request.headers.get('over_fuel')))
+        return jsonify({"status": new})
+    except Exception:
+        return jsonify({"status": "error"})
 
 
 async def change_fuel_note(note_id: int):
@@ -66,9 +69,17 @@ async def change_fuel_note(note_id: int):
         query = await Fuel.query.where(Fuel.id == note_id).gino.first()
         if query.driver == user['id']:
             date = datetime.datetime.strptime(request.headers.get("date"), '%Y-%m-%d').date()
-            await query.update(milleage=int(request.headers.get('milleage')),
+            await query.update(driver=user['id'],
+                               milleage=int(request.headers.get('milleage')),
                                fuel_delta=float(request.headers.get('fuel_delta')),
-                               date=date).apply()
+                               date=date,
+                               f_odo=int(request.headers.get('f_odo')),
+                               f_fuel=float(request.headers.get('f_fuel')),
+                               s_odo=int(request.headers.get('s_odo')),
+                               s_fuel=float(request.headers.get('s_fuel')),
+                               auto=int(request.headers.get('auto')),
+                               econ_fuel=float(request.headers.get('econ_fuel')),
+                               over_fuel=float(request.headers.get('over_fuel'))).apply()
             return jsonify({"status": "ok"})
         else:
             return jsonify({"status": "no permission"})
