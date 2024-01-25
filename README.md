@@ -2,7 +2,7 @@
 <img src="fixtures/screenshots/header.png">
 </div>
 <div id="badges" align="center">
-  <a href="https://t.me/devil_on_the_wheel">
+  <a href="https://t.me/dl_workhelper_bot">
     <img src="https://img.shields.io/badge/попробовать-26A5E4?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram Badge"/>
   </a>
     <img src="https://komarev.com/ghpvc/?username=igor-526DELLINWT&color=blue&style=for-the-badge&label=ПРОСМОТРЫ"/>
@@ -95,6 +95,6 @@
 
 <h1>Дополнения</h1>
 В разработке находится Android приложение для GUI-взаимодействия с проектом
-<a href="https://t.me/devil_on_the_wheel">
+<a href="https://github.com/igor-526/DellinWT_app">
     <img src="https://img.shields.io/badge/перейти-F05032?style=for-the-badge&logo=git&logoColor=white" alt="GIT Badge"/>
   </a>
