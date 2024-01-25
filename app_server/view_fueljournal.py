@@ -37,7 +37,7 @@ async def delete_fuel_note(note_id: int):
             return jsonify({"status": "not found"})
         if query.driver == user['id']:
             await query.delete()
-            return jsonify({"status": "OK"})
+            return jsonify({"status": "ok"})
         else:
             return jsonify({"status": "no permission"})
 
