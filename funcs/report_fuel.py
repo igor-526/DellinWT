@@ -1,5 +1,5 @@
 import db_api
-
+from datetime import date
 
 async def calc(user_id, month):
     fueltable = await db_api.sel_fuel(user_id)
@@ -8,7 +8,7 @@ async def calc(user_id, month):
     total_f = 0
     msg = 'Поездки за месяц:\n'
     for note in fueltable:
-        if note["date"].month == month:
+        if note["date"].month == month and note["date"].year == date.today().year:
             msg += (f'{note["date"].strftime("%d.%m")}: '
                     f'{note["milleage"]} км; '
                     f'{note["fuel_delta"]:.2f} л.\n')
