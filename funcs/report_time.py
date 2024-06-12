@@ -1,5 +1,5 @@
 import db_api
-from datetime import date
+import datetime
 
 
 async def calc(user_id, month):
@@ -8,7 +8,7 @@ async def calc(user_id, month):
     data = {'timetable': [], 'delta': None}
     total = 0
     for note in timetable:
-        if note["start"].month == month and note["start"].year == date.today().year:
+        if note["start"].month == month and note["start"].year == datetime.datetime.now().year:
             date = (f'{note["start"].day}.'
                     f'{note["start"].month}.'
                     f'{note["start"].year}')
